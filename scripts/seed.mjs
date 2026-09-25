@@ -1,4 +1,4 @@
-// Seeds MongoDB with the client-confirmed content: services, FAQs and the starting price.
+// Seeds MongoDB with the client-confirmed content: services, FAQs and the starting price (+ replaces old stock photos).
 //   npm run seed            → inserts anything missing, never touches records an admin has edited
 //   npm run seed -- --force → also resets the seeded records back to these defaults
 // Testimonials, team members and blog posts are deliberately not seeded: they must be real, added in /admin.
@@ -35,6 +35,11 @@ try {
     }
     console.log(`${collection.padEnd(9)} ${inserted} inserted, ${force ? `${reset} reset, ` : ''}${docs.length - inserted - reset} unchanged`)
   }
+  // The first build seeded Unsplash stock photos; swap any still in place for the client's own photos (uploads are untouched).
+  let swapped = 0
+  for (const s of defaultServices) swapped += (await db.collection('services').updateOne({ slug: s.slug, image: /images\.unsplash\.com/ }, { $set: { image: s.image, updatedAt: new Date() } })).modifiedCount
+  swapped += (await db.collection('settings').deleteMany({ value: /images\.unsplash\.com/ })).deletedCount
+  console.log(`stock photos replaced: ${swapped}`)
   console.log('Seed complete.')
 } finally {
   await mongoose.disconnect()

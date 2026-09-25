@@ -1,12 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Mail, MessageCircle, Phone } from 'lucide-react'
-import { audiences, defaultImages, nav, site } from '@/lib/site'
+import { audiences, defaultImages, defaultServices, nav, site } from '@/lib/site'
 import { resolveImage } from '@/lib/uploads'
 
-export function Img({ src, fallback, alt, sizes, priority }: { src?: string; fallback: string; alt: string; sizes: string; priority?: boolean }) {
-  return <Image src={resolveImage(src, fallback)} alt={alt} fill sizes={sizes} priority={priority} />
+/** `natural` shows the whole photo at its own proportions (no cropping); otherwise it fills a sized frame. */
+export function Img({ src, fallback, alt, sizes, priority, natural }: { src?: string; fallback: string; alt: string; sizes: string; priority?: boolean; natural?: boolean }) {
+  const url = resolveImage(src, fallback)
+  if (natural) return <Image src={url} alt={alt} width={1600} height={1200} sizes={sizes} priority={priority} style={{ width: '100%', height: 'auto' }} />
+  return <Image src={url} alt={alt} fill sizes={sizes} priority={priority} />
 }
+
+// A service's own live-site photo when its saved image is missing or legacy.
+export const serviceImage = (slug: string) => defaultServices.find((d) => d.slug === slug)?.image ?? defaultImages.introImage
 
 /** Live-site page header: left-aligned with a rule (concepts page) or centred (contact page). */
 export function PageHead({ label, title, intro, center }: { label: string; title: React.ReactNode; intro?: string; center?: boolean }) {
@@ -53,7 +59,7 @@ export function ConceptGrid({ services }: { services: any[] }) {
     <div className="concepts-grid">
       {services.map((s, i) => (
         <Link className="concept-card" key={s._id ?? s.slug} href={`/services/${s.slug}`}>
-          <div className="card-img"><Img src={s.image} fallback={defaultImages.introImage} alt={s.name} sizes="(max-width: 640px) 100vw, (max-width: 860px) 50vw, 360px" /></div>
+          <div className="card-img"><Img src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 640px) 100vw, (max-width: 860px) 50vw, 360px" /></div>
           <div className="card-body">
             <p className="card-num">{String(i + 1).padStart(2, '0')}</p>
             <h3 className="card-name">{s.name}</h3>

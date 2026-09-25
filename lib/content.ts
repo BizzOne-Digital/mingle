@@ -88,6 +88,7 @@ export const resources: Record<string, Resource> = {
 // Admin-editable page images and pricing copy (stored as key/value Settings).
 export const settingsFields: Field[] = [
   { name: 'heroImage', label: 'Home — hero image', type: 'image' },
+  { name: 'heroSecondImage', label: 'Home — image under the hero (hidden until uploaded)', type: 'image' },
   { name: 'introImage', label: 'Home — introduction image', type: 'image' },
   { name: 'aboutImage', label: 'About page image', type: 'image' },
   { name: 'pricingImage', label: 'Pricing page image', type: 'image' },
@@ -97,8 +98,8 @@ export const settingsFields: Field[] = [
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const TEL = /^[+\d\s().-]{7,30}$/
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-// Uploaded images, legacy /uploads paths, or the two hosts allowed in next.config images.remotePatterns.
-const IMAGE = /^(\/api\/uploads\/|\/uploads\/|https:\/\/(images\.unsplash\.com|res\.cloudinary\.com)\/)/
+// Uploaded images, the bundled live-site photos, legacy /uploads paths, or the Cloudinary host in next.config.
+const IMAGE = /^(\/api\/uploads\/|\/images\/live\/|\/uploads\/|https:\/\/res\.cloudinary\.com\/)/
 
 export function clean(fields: Field[], input: unknown, partial = false): { data?: Record<string, unknown>; error?: string } {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return { error: 'Invalid request body.' }

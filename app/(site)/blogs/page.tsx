@@ -18,7 +18,7 @@ export default async function Blogs() {
         <div className="concepts-grid">
           {posts.map((p) => (
             <Link className="concept-card" key={p._id} href={`/blogs/${p.slug}`}>
-              <div className="card-img" style={{ height: 260 }}><Img src={p.image} fallback={defaultImages.introImage} alt="" sizes="(max-width: 640px) 100vw, 360px" /></div>
+              <div className="card-img"><Img src={p.image} fallback={defaultImages.introImage} alt="" sizes="(max-width: 640px) 100vw, 360px" /></div>
               <div className="card-body">
                 {p.publishedAt && <p className="card-num"><time dateTime={p.publishedAt}>{fmtDate(p.publishedAt).toUpperCase()}</time></p>}
                 <h2 className="card-name">{p.title}</h2>

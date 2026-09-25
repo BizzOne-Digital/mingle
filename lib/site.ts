@@ -27,25 +27,33 @@ export const offerings = [
   'Interactive experiences', 'Creative experiences', 'Beautiful event vignettes',
 ]
 
-// Temporary imagery carried over from the current build. Replace any of it from Admin → Pages / Services.
+// The client's own photos from the live the-mingle.com (public/images/live). Replace any of them from Admin → Pages / Services.
+const live = (file: string) => `/images/live/${file}`
 export const defaultImages: Record<string, string> = {
-  heroImage: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=2200&q=85',
-  introImage: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=85',
-  aboutImage: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=1200&q=85',
-  pricingImage: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=1200&q=85',
+  heroImage: live('the-mingle-events.jpg'),
+  introImage: live('the-mingle.jpg'),
+  aboutImage: live('the-mingle-events.jpg'),
+  pricingImage: live('the-mingle-bike.jpg'),
   pricingStartingPrice: '$800 plus supplies',
 }
 
+// Shown on /gallery until real photos are uploaded to Admin → Gallery.
+export const defaultGallery = [
+  'pop-pop-fizz.jpg', 'bliss-bar.jpg', '19th-hole.jpg', 'celebrations.jpg', 'boot-scoot.jpg', 'a-little-romance.png', 'bark-bar.jpg',
+  'bark-bar-cart-with-dogs.jpg', 'bark-bar-bone-sign-side-view.jpg', 'bark-bar-treats-display.jpg', 'bark-bar-birthday-party.jpg',
+  'celebrations-kids-birthday-party.jpg', 'celebrations-party-scene.jpg', 'romance-candlelit-proposal.jpg',
+].map((f) => ({ url: live(f), filename: f }))
+
 export const defaultServices = [
-  { name: 'Curated Carts', slug: 'curated-carts', image: defaultImages.pricingImage, startingPrice: 'Most start at approximately $800 plus supplies', featured: true, sortOrder: 1, active: true,
+  { name: 'Curated Carts', slug: 'curated-carts', image: live('pop-pop-fizz.jpg'), startingPrice: 'Most start at approximately $800 plus supplies', featured: true, sortOrder: 1, active: true,
     description: 'Beautifully styled carts built around food and games — curated for your event, your guests and your vision.' },
-  { name: 'Bliss Bar', slug: 'bliss-bar', image: defaultImages.introImage, startingPrice: '', featured: true, sortOrder: 2, active: true,
+  { name: 'Bliss Bar', slug: 'bliss-bar', image: live('bliss-bar.jpg'), startingPrice: '', featured: true, sortOrder: 2, active: true,
     description: 'A build-your-own takeaway experience where guests curate their own swag bag to carry the celebration home.' },
-  { name: 'Petal Passion', slug: 'petal-passion', image: defaultImages.aboutImage, startingPrice: '', featured: true, sortOrder: 3, active: true,
+  { name: 'Petal Passion', slug: 'petal-passion', image: live('a-little-romance.png'), startingPrice: '', featured: true, sortOrder: 3, active: true,
     description: 'Our flower bar. Guests create their own floral moment, arranged with intention and made to be remembered.' },
-  { name: 'Interactive Experiences', slug: 'interactive-experiences', image: defaultImages.heroImage, startingPrice: '', featured: false, sortOrder: 4, active: true,
+  { name: 'Interactive Experiences', slug: 'interactive-experiences', image: live('19th-hole.jpg'), startingPrice: '', featured: false, sortOrder: 4, active: true,
     description: 'Interactive stations that get guests mingling, playing and creating together — fun by design.' },
-  { name: 'Event Vignettes', slug: 'event-vignettes', image: defaultImages.introImage, startingPrice: '', featured: false, sortOrder: 5, active: true,
+  { name: 'Event Vignettes', slug: 'event-vignettes', image: live('celebrations.jpg'), startingPrice: '', featured: false, sortOrder: 5, active: true,
     description: 'Beautiful, creative and interactive setups styled to make your event extra special and unforgettable.' },
 ]
 

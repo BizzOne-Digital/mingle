@@ -34,5 +34,7 @@ export async function replaceImageReferences(oldUrl: string, newUrl: string) {
   ])
 }
 
-// Legacy /uploads/... files never existed on this deployment, so fall back instead of rendering a broken image.
-export const resolveImage = (src: unknown, fallback: string) => (typeof src === 'string' && src && !src.startsWith('/uploads/') ? src : fallback)
+// Fall back instead of rendering a broken image: legacy /uploads/... files never existed on this deployment,
+// and Unsplash stock URLs from the first build may still sit in the database but are no longer an allowed host.
+const legacy = (src: string) => src.startsWith('/uploads/') || src.includes('images.unsplash.com')
+export const resolveImage = (src: unknown, fallback: string) => (typeof src === 'string' && src && !legacy(src) ? src : fallback)

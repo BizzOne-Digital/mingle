@@ -16,10 +16,11 @@ export default async function Home() {
         <p className="lead">Beautiful curated carts for food and games, build-your-own takeaway bags, our Bliss Bar and our Petal Passion flower bar — made to make your event extra special.</p>
         <div className="actions"><Link className="btn-pink" href="/booking">Book your event</Link><Link className="btn-outline" href="/services">Explore services</Link></div>
       </section>
-      <div className="hero-image"><Img src={settings.heroImage} fallback={defaultImages.heroImage} alt="A beautifully styled Mingle event" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
+      <div className="hero-image"><Img natural src={settings.heroImage} fallback={defaultImages.heroImage} alt="A beautifully styled Mingle event" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
+      {settings.heroSecondImage && <div className="home-banner"><Img natural src={settings.heroSecondImage} fallback={defaultImages.heroImage} alt="The Mingle" sizes="(max-width: 1008px) 100vw, 960px" /></div>}
 
       <section className="split">
-        <div className="split-image"><Img src={settings.introImage} fallback={defaultImages.introImage} alt="Guests enjoying a curated Mingle experience" sizes="(max-width: 640px) 100vw, 536px" /></div>
+        <div className="split-image"><Img natural src={settings.introImage} fallback={defaultImages.introImage} alt="Guests enjoying a curated Mingle experience" sizes="(max-width: 640px) 100vw, 536px" /></div>
         <div className="split-body">
           <p className="kicker">Welcome to The Mingle</p>
           <h2>Fun. Creative.<br /><span className="pink">Unforgettable.</span></h2>
@@ -50,7 +51,7 @@ export default async function Home() {
           <p>Most curated carts start at approximately <strong>{settings.pricingStartingPrice}</strong>. We will customize a price plan for your budget.</p>
           <div className="actions"><Link className="btn-pink" href="/pricing">View pricing</Link><Link className="btn-outline" href="/booking">Request a proposal</Link></div>
         </div>
-        <div className="split-image"><Img src={settings.pricingImage} fallback={defaultImages.pricingImage} alt="A curated Mingle cart" sizes="(max-width: 640px) 100vw, 536px" /></div>
+        <div className="split-image"><Img natural src={settings.pricingImage} fallback={defaultImages.pricingImage} alt="A curated Mingle cart" sizes="(max-width: 640px) 100vw, 536px" /></div>
       </section>
 
       {testimonials.length > 0 && (

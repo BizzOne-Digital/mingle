@@ -24,7 +24,7 @@ export default async function BlogPost({ params }: Props) {
         <p className="section-label">{post.publishedAt ? <time dateTime={post.publishedAt}>{fmtDate(post.publishedAt)}</time> : 'Blog'}{post.author && ` · ${post.author}`}</p>
         <h1>{post.title}</h1>
         {post.excerpt && <p className="concept-tagline">{post.excerpt}</p>}
-        {post.image && <div className="article-image"><Img src={post.image} fallback={defaultImages.introImage} alt="" sizes="(max-width: 760px) 100vw, 720px" priority /></div>}
+        {post.image && <div className="article-image"><Img natural src={post.image} fallback={defaultImages.introImage} alt="" sizes="(max-width: 760px) 100vw, 720px" priority /></div>}
         <div className="about-body">{String(post.content || '').split(/\n\s*\n/).map((para, i) => <p key={i}>{para}</p>)}</div>
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />

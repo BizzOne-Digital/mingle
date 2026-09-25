@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { MessageCircle } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { AudienceBand, Img } from '@/components/site'
+import { AudienceBand, Img, serviceImage } from '@/components/site'
 import { getOne } from '@/lib/data'
-import { audiences, defaultImages } from '@/lib/site'
+import { audiences, site } from '@/lib/site'
 
 type Props = { params: Promise<{ slug: string }> }
 const find = async (params: Props['params']) => getOne('services', { slug: (await params).slug, active: true })
@@ -22,7 +23,7 @@ export default async function Service({ params }: Props) {
   return (
     <>
       <Link className="concept-back" href="/services">← All services</Link>
-      <div className="concept-hero"><Img src={s.image} fallback={defaultImages.introImage} alt={s.name} sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
+      <div className="concept-hero"><Img natural src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
       <div className="concept-intro">
         <h1 className="concept-title">{s.name}</h1>
         <p className="concept-tagline">{s.description}</p>
@@ -39,6 +40,7 @@ export default async function Service({ params }: Props) {
           <p className="price-note">We will customize a price plan for your budget. Your final quote is confirmed in a custom proposal.</p>
           <Link className="btn-pink" href={book}>Book this experience</Link>
           <Link className="btn-outline" href="/contact">Ask a question</Link>
+          <a className="btn-outline btn-whatsapp" href={site.whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} aria-hidden="true" />WhatsApp us</a>
         </aside>
       </div>
       <AudienceBand />

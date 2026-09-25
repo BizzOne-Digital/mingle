@@ -14,7 +14,7 @@ export default async function About() {
   const settings = await getSettings()
   return (
     <>
-      <div className="about-banner"><Img src={settings.aboutImage} fallback={defaultImages.aboutImage} alt="A curated Mingle event vignette" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
+      <div className="about-banner"><Img natural src={settings.aboutImage} fallback={defaultImages.aboutImage} alt="A curated Mingle event vignette" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
       <div className="about-content">
         <div>
           <p className="section-label" style={{ marginBottom: 12 }}>About The Mingle</p>

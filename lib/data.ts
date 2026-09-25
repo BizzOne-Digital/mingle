@@ -1,6 +1,6 @@
 import { resources } from './content'
 import { db, models, Setting, StoredUpload, toPlain } from './db'
-import { defaultFaqs, defaultImages, defaultServices } from './site'
+import { defaultFaqs, defaultGallery, defaultImages, defaultServices } from './site'
 
 const seeds: Record<string, unknown[]> = { services: defaultServices, faqs: defaultFaqs }
 
@@ -30,14 +30,14 @@ export async function getOne(resource: string, filter: Record<string, unknown>):
 
 export const getBlog = (slug: string) => getOne('blogs', { slug, published: true })
 
-// Gallery = admin uploads in the "gallery" folder (metadata only; bytes are served by /api/uploads).
+// Gallery = admin uploads in the "gallery" folder (newest first), followed by the client's live-site photos.
 export async function listGallery(): Promise<{ url: string; filename: string }[]> {
   try {
     await db()
     const rows = await StoredUpload.find({ folder: 'gallery' }).select('folder filename').sort({ createdAt: -1 }).limit(200).lean()
-    return rows.map((r: any) => ({ url: `/api/uploads/${r.folder}/${r.filename}`, filename: r.filename }))
+    return [...rows.map((r: any) => ({ url: `/api/uploads/${r.folder}/${r.filename}`, filename: r.filename })), ...defaultGallery]
   } catch {
-    return []
+    return defaultGallery
   }
 }
 

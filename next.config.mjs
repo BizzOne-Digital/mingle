@@ -4,12 +4,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    // Admin uploads are served from MongoDB via /api/uploads/**; the two remote hosts hold the logo and temporary imagery.
-    localPatterns: [{ pathname: '/api/uploads/**' }],
-    remotePatterns: [
-      { protocol: 'https', hostname: 'res.cloudinary.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-    ],
+    // Admin uploads are served from MongoDB via /api/uploads/**; /images/** holds the client's live-site photos; Cloudinary holds the logo.
+    localPatterns: [{ pathname: '/api/uploads/**' }, { pathname: '/images/**' }],
+    remotePatterns: [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
   },
 }
 
