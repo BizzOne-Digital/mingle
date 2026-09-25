@@ -69,11 +69,14 @@ p { margin: 0; }
 .hero h1 { font-size: 56px; line-height: 1.08; margin-bottom: 20px; }
 .hero .lead { font-size: 17px; max-width: 540px; margin: 0 auto 32px; }
 /* Photos are shown whole (the client asked for no cropping); very tall ones are capped and letterboxed on white. */
-.hero-image img, .about-banner img, .concept-hero img, .split-image img, .article-image img { display: block; object-fit: contain; background: var(--white); }
-.hero-image img { max-height: 720px; }
-/* Optional second home image (Admin → Pages), styled like the live site's strip under the hero. */
-.home-banner { padding: 12px 0; background: var(--blush); }
-.home-banner img { display: block; max-width: 960px; max-height: 640px; margin: 0 auto; object-fit: contain; }
+/* Full photos on detail/split/article views; hero + About banner are zoomed to fill like the live site. */
+.concept-hero img, .split-image img, .article-image img { display: block; object-fit: contain; background: var(--white); }
+.hero-image, .about-banner { position: relative; overflow: hidden; }
+.hero-image { height: 480px; }
+.hero-image img { object-fit: cover; object-position: center 30%; }
+/* Optional second home image (Admin → Pages): same full width as the hero, shown whole. */
+.home-banner { margin-top: 16px; }
+.home-banner img { display: block; }
 
 /* Page headers: .page-head (concepts style, left) and .page-head.center (contact style) */
 .page-head { padding: 40px 0 28px; border-bottom: 1px solid var(--rule); }
@@ -111,7 +114,7 @@ p { margin: 0; }
 .concept-card { display: block; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); overflow: hidden; transition: background .15s; }
 .concept-card:hover { background: var(--blush); }
 .card-img { position: relative; aspect-ratio: 3 / 4; background: var(--paper); }
-.card-img img { object-fit: contain; }
+.card-img img { object-fit: cover; }
 .card-body { padding: 20px; }
 .card-num { margin-bottom: 6px; font: 10px var(--sans); letter-spacing: .15em; color: var(--label); }
 .card-name { margin-bottom: 6px; font-size: 18px; font-weight: 700; }
@@ -144,7 +147,8 @@ p { margin: 0; }
 .btn-whatsapp:hover svg { color: currentColor; }
 
 /* About */
-.about-banner img { max-height: 620px; }
+.about-banner { height: 320px; margin-top: 24px; }
+.about-banner img { object-fit: cover; object-position: center 20%; }
 .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 48px 0; }
 .about-title { font-size: 36px; line-height: 1.2; margin-bottom: 20px; }
 .about-body p { margin-bottom: 16px; font: 15px/1.8 var(--sans); color: var(--body); }
@@ -252,6 +256,8 @@ p { margin: 0; }
 }
 /* The live site's single breakpoint */
 @media (max-width: 640px) {
+  .hero-image { height: 320px; }
+  .about-banner { height: 240px; }
   .brand img { width: 160px; }
   .hero h1 { font-size: 40px; }
   .split, .concepts-grid, .about-content, .contact-grid, .steps, .site-footer, .includes-list, .quotes, .form-grid { grid-template-columns: 1fr; }

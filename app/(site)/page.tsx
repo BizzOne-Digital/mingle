@@ -16,8 +16,8 @@ export default async function Home() {
         <p className="lead">Beautiful curated carts for food and games, build-your-own takeaway bags, our Bliss Bar and our Petal Passion flower bar — made to make your event extra special.</p>
         <div className="actions"><Link className="btn-pink" href="/booking">Book your event</Link><Link className="btn-outline" href="/services">Explore services</Link></div>
       </section>
-      <div className="hero-image"><Img natural src={settings.heroImage} fallback={defaultImages.heroImage} alt="A beautifully styled Mingle event" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
-      {settings.heroSecondImage && <div className="home-banner"><Img natural src={settings.heroSecondImage} fallback={defaultImages.heroImage} alt="The Mingle" sizes="(max-width: 1008px) 100vw, 960px" /></div>}
+      <div className="hero-image"><Img src={settings.heroImage} fallback={defaultImages.heroImage} alt="A beautifully styled Mingle event" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
+      {settings.heroSecondImage && <div className="home-banner"><Img natural src={settings.heroSecondImage} fallback={defaultImages.heroImage} alt="The Mingle" sizes="(max-width: 1120px) 100vw, 1072px" /></div>}
 
       <section className="split">
         <div className="split-image"><Img natural src={settings.introImage} fallback={defaultImages.introImage} alt="Guests enjoying a curated Mingle experience" sizes="(max-width: 640px) 100vw, 536px" /></div>
