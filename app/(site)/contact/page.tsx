@@ -4,7 +4,7 @@ import { listPublic } from '@/lib/data'
 
 export const metadata = {
   title: 'Contact',
-  description: 'Call, text or WhatsApp The Mingle at +1 913-706-2347, email info@themingle.com or find us on Instagram @TheMingleKC.',
+  description: 'Call, text or WhatsApp The Mingle at +1 913-706-2347, email Allisonnow30@gmail.com or find us on Instagram @TheMingleKC.',
   alternates: { canonical: '/contact' },
 }
 
