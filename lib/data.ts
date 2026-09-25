@@ -1,5 +1,5 @@
 import { resources } from './content'
-import { db, models, Setting, toPlain } from './db'
+import { db, models, Setting, StoredUpload, toPlain } from './db'
 import { defaultFaqs, defaultImages, defaultServices } from './site'
 
 const seeds: Record<string, unknown[]> = { services: defaultServices, faqs: defaultFaqs }
@@ -18,12 +18,26 @@ export async function listPublic(resource: string, filter: Record<string, unknow
   }
 }
 
-export async function getBlog(slug: string): Promise<any | null> {
+export async function getOne(resource: string, filter: Record<string, unknown>): Promise<any | null> {
   try {
     await db()
-    return toPlain(await models.blogs.findOne({ slug, published: true }).lean())
+    return toPlain(await models[resource].findOne(filter).lean())
   } catch {
-    return null
+    const seed = (seeds[resource] ?? []) as Record<string, unknown>[]
+    return seed.find((r) => Object.entries(filter).every(([k, v]) => r[k] === v)) ?? null
+  }
+}
+
+export const getBlog = (slug: string) => getOne('blogs', { slug, published: true })
+
+// Gallery = admin uploads in the "gallery" folder (metadata only; bytes are served by /api/uploads).
+export async function listGallery(): Promise<{ url: string; filename: string }[]> {
+  try {
+    await db()
+    const rows = await StoredUpload.find({ folder: 'gallery' }).select('folder filename').sort({ createdAt: -1 }).limit(200).lean()
+    return rows.map((r: any) => ({ url: `/api/uploads/${r.folder}/${r.filename}`, filename: r.filename }))
+  } catch {
+    return []
   }
 }
 

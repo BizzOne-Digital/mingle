@@ -1,5 +1,5 @@
 import BookingForm from '@/components/booking-form'
-import { ContactLinks, PageHero, SectionLabel } from '@/components/site'
+import { ContactLinks, PageHead } from '@/components/site'
 import { listPublic } from '@/lib/data'
 
 export const metadata = {
@@ -8,25 +8,27 @@ export const metadata = {
   alternates: { canonical: '/booking' },
 }
 
+const steps = [
+  ['01', 'Send your details', 'Tell us about your event, your guests and the experience you have in mind.'],
+  ['02', 'Get your proposal', 'We follow up to talk through your vision and prepare a price plan for your budget.'],
+  ['03', 'Secure your date', 'Once your experience is confirmed, we send a secure link to pay your deposit.'],
+]
+
 export default async function Booking({ searchParams }: { searchParams: Promise<{ service?: string }> }) {
   const [{ service }, services] = await Promise.all([searchParams, listPublic('services')])
   const names = services.map((s) => s.name as string)
   return (
     <>
-      <PageHero eyebrow="Booking" title={<>Your event, <em>your way.</em></>} intro="Share a little about what you are planning. We will follow up to talk through your vision, availability and a price plan for your budget." />
-      <section className="section-pad booking-layout" style={{ paddingTop: 0 }}>
-        <aside className="booking-aside">
-          <SectionLabel>How it works</SectionLabel>
-          <ol className="lead" style={{ paddingLeft: 20 }}>
-            <li>Send your event details.</li>
-            <li>We follow up and prepare a custom proposal.</li>
-            <li>Once confirmed, we send a secure link for your deposit.</li>
-          </ol>
-          <SectionLabel>Prefer to talk?</SectionLabel>
-          <ContactLinks />
-        </aside>
+      <PageHead center label="Booking" title={<>Your event, <span className="pink">your way.</span></>} intro="Share a little about what you are planning and we will take it from here." />
+      <div className="steps" style={{ marginTop: 48 }}>
+        {steps.map(([n, title, text]) => <article key={n}><p className="card-num">{n}</p><h2>{title}</h2><p>{text}</p></article>)}
+      </div>
+      <div className="form-wrap">
+        <h2 className="form-title">Book your event</h2>
         <BookingForm services={names} defaultService={names.includes(service ?? '') ? service : ''} />
-      </section>
+        <p className="col-title" style={{ textAlign: 'center', marginTop: 40 }}>Prefer to talk?</p>
+        <div style={{ display: 'flex', justifyContent: 'center' }}><ContactLinks /></div>
+      </div>
     </>
   )
 }

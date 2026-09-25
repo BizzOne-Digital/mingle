@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { PageHero } from '@/components/site'
+import { PageHead } from '@/components/site'
 import { site } from '@/lib/site'
 
 export const metadata = { title: 'Deposit', robots: { index: false } }
@@ -9,12 +9,14 @@ export default async function Deposit({ searchParams }: { searchParams: Promise<
   const { status } = await searchParams
   const paid = status === 'success'
   return (
-    <PageHero
-      eyebrow="Deposit"
-      title={paid ? <>Thank you — your deposit is <em>on its way.</em></> : <>Your deposit was <em>not completed.</em></>}
-      intro={paid ? 'We will confirm your booking by email as soon as the payment is processed.' : `No payment was taken. Use the link we sent you to try again, or contact us at ${site.phone}.`}
-    >
-      <div className="actions" style={{ justifyContent: 'center' }}><Link className="button button-pink" href="/">Back to The Mingle</Link><Link className="button button-outline" href="/contact">Contact us</Link></div>
-    </PageHero>
+    <>
+      <PageHead
+        center
+        label="Deposit"
+        title={paid ? <>Thank you — your deposit is <span className="pink">on its way.</span></> : <>Your deposit was <span className="pink">not completed.</span></>}
+        intro={paid ? 'We will confirm your booking by email as soon as the payment is processed.' : `No payment was taken. Use the link we sent you to try again, or contact us at ${site.phone}.`}
+      />
+      <div className="actions" style={{ justifyContent: 'center', margin: '32px 0 48px' }}><Link className="btn-pink" href="/">Back to The Mingle</Link><Link className="btn-outline" href="/contact">Contact us</Link></div>
+    </>
   )
 }

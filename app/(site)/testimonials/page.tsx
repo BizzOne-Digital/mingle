@@ -1,4 +1,4 @@
-import { CtaBand, EmptyState, PageHero } from '@/components/site'
+import { AudienceBand, EmptyState, PageHead } from '@/components/site'
 import { listPublic } from '@/lib/data'
 
 export const metadata = {
@@ -11,13 +11,11 @@ export default async function Testimonials() {
   const items = await listPublic('testimonials')
   return (
     <>
-      <PageHero eyebrow="Testimonials" title={<>Kind <em>words.</em></>} intro="What our clients say about celebrating with The Mingle." />
-      <section className="section-pad" style={{ paddingTop: 0 }}>
-        {items.length === 0 ? <EmptyState title="Client stories are on the way" text="We are gathering words from our recent celebrations. In the meantime, see our latest work on Instagram." /> : (
-          <div className="quote-grid">{items.map((t) => <figure className="quote reveal" key={t._id}><blockquote>“{t.text}”</blockquote><figcaption>{t.name}{t.eventType && <span> · {t.eventType}</span>}</figcaption></figure>)}</div>
-        )}
-      </section>
-      <CtaBand />
+      <PageHead label="Testimonials" title="Kind words" intro="What our clients say about celebrating with The Mingle." />
+      {items.length === 0 ? <EmptyState title="Client stories are on the way" text="We are gathering words from our recent celebrations. In the meantime, see our latest work on Instagram." /> : (
+        <div className="quotes">{items.map((t) => <figure key={t._id}><blockquote className="about-quote">“{t.text}”</blockquote><figcaption>{t.name}{t.eventType && <span> · {t.eventType}</span>}</figcaption></figure>)}</div>
+      )}
+      <AudienceBand />
     </>
   )
 }

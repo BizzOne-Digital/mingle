@@ -13,7 +13,7 @@ export const site = {
 }
 
 export const nav: [string, string][] = [
-  ['/', 'Home'], ['/about', 'About'], ['/services', 'Services'], ['/pricing', 'Pricing'], ['/testimonials', 'Testimonials'],
+  ['/', 'Home'], ['/about', 'About'], ['/services', 'Services'], ['/pricing', 'Pricing'], ['/gallery', 'Gallery'], ['/testimonials', 'Testimonials'],
   ['/faq', 'FAQ'], ['/team', 'Our Team'], ['/blogs', 'Blogs'], ['/contact', 'Contact'],
 ]
 

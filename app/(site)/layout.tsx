@@ -23,9 +23,11 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <Header />
-      <main id="main">{children}</main>
-      <Footer />
+      <div className="site">
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+      </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
     </>
   )

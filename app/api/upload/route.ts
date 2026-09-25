@@ -40,8 +40,8 @@ export async function POST(req: Request) {
     if (typeof replace === 'string' && parseUploadUrl(replace)) {
       await replaceImageReferences(replace, url)
       await deleteStoredUpload(replace)
-      revalidatePath('/', 'layout')
     }
+    revalidatePath('/', 'layout') // gallery page lists uploads directly
     return ok({ url, filename, size: file.size, folder }, 201)
   } catch {
     return fail('Upload failed. Please try again.', 500)
