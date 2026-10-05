@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { AudienceBand, PageHead } from '@/components/site'
-import { getSettings, listPublic } from '@/lib/data'
+import { BookCta, Img, PageHead } from '@/components/site'
+import { getSettings } from '@/lib/data'
+import { defaultImages } from '@/lib/site'
 
 export const metadata = {
   title: 'Pricing',
@@ -9,8 +10,7 @@ export const metadata = {
 }
 
 export default async function Pricing() {
-  const [settings, services] = await Promise.all([getSettings(), listPublic('services')])
-  const priced = services.filter((s) => s.startingPrice)
+  const settings = await getSettings()
   return (
     <>
       <PageHead label="Pricing" title="A price plan made for your event" intro="Every Mingle experience is curated for your event, so every price plan is too." />
@@ -31,14 +31,16 @@ export default async function Pricing() {
           <p>Your final quote is confirmed in a custom proposal once we understand your event. Starting prices are not final quotes.</p>
         </article>
       </div>
-      {priced.length > 0 && (
-        <section>
-          <div className="section-head" style={{ paddingTop: 0 }}><div><p className="section-label">By experience</p><h2>Starting points</h2></div></div>
-          <ul className="includes-list single">{priced.map((s) => <li key={s._id ?? s.slug}><Link href={`/services/${s.slug}`}><strong>{s.name}</strong> — {s.startingPrice}</Link></li>)}</ul>
-        </section>
-      )}
-      <div className="actions center" style={{ justifyContent: 'center', margin: '32px 0 0' }}><Link className="btn-pink" href="/booking">Request a custom proposal</Link><Link className="btn-outline" href="/contact">Talk to us</Link></div>
-      <AudienceBand />
+      {/* Editorial feature image — Admin → Pages → "Pricing page — feature image" overrides the default. */}
+      <figure className="feature-image">
+        <div className="feature-frame"><Img src={settings.pricingImage} fallback={defaultImages.pricingImage} alt="A curated Mingle setup" sizes="(max-width: 1120px) 100vw, 1072px" /></div>
+        <figcaption>
+          <p className="kicker">Your event, your way</p>
+          <p className="feature-quote">Every detail is curated around your guests, your vision and your budget.</p>
+          <div className="actions"><Link className="btn-pink" href="/booking">Request a custom proposal</Link><Link className="btn-outline" href="/contact">Talk to us</Link></div>
+        </figcaption>
+      </figure>
+      <BookCta />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { AudienceBand, EmptyState, PageHead } from '@/components/site'
+import { BookCta, EmptyState, PageHead } from '@/components/site'
 import { listPublic } from '@/lib/data'
 
 export const metadata = {
@@ -15,7 +15,7 @@ export default async function Testimonials() {
       {items.length === 0 ? <EmptyState title="Client stories are on the way" text="We are gathering words from our recent celebrations. In the meantime, see our latest work on Instagram." /> : (
         <div className="quotes">{items.map((t) => <figure key={t._id}><blockquote className="about-quote">“{t.text}”</blockquote><figcaption>{t.name}{t.eventType && <span> · {t.eventType}</span>}</figcaption></figure>)}</div>
       )}
-      <AudienceBand />
+      <BookCta />
     </>
   )
 }

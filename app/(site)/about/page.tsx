@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { AudienceBand, ContactLinks, Img } from '@/components/site'
+import { AudienceBand, BookCta, ContactLinks, Img } from '@/components/site'
 import { getSettings } from '@/lib/data'
 import { defaultImages, offerings } from '@/lib/site'
 
@@ -32,11 +32,12 @@ export default async function About() {
           <Link className="btn-pink btn-block" href="/contact" style={{ padding: 16 }}>Let&apos;s connect</Link>
           <p className="col-title">Reach us directly</p>
           <ContactLinks />
-          <p className="col-title">Meet the people behind it</p>
-          <Link className="text-link" href="/team" style={{ marginTop: 0 }}>Our team →</Link>
+          <p className="col-title">Fun for every guest</p>
+          <Link className="text-link" href="/fun-and-games" style={{ marginTop: 0 }}>Fun &amp; Games →</Link>
         </div>
       </div>
       <AudienceBand />
+      <BookCta />
     </>
   )
 }

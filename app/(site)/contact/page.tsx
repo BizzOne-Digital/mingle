@@ -1,5 +1,5 @@
 import BookingForm from '@/components/booking-form'
-import { ContactCards, PageHead } from '@/components/site'
+import { BookCta, ContactCards, PageHead } from '@/components/site'
 import { listPublic } from '@/lib/data'
 
 export const metadata = {
@@ -19,6 +19,7 @@ export default async function Contact() {
         <h2 className="form-title">Send a message</h2>
         <BookingForm services={services.map((s) => s.name)} submitLabel="Send message" />
       </div>
+      <BookCta title={<>Ready to reserve <span className="pink">your date?</span></>} text="Use our booking form to share your date, guest count and experience — we will follow up with a custom proposal." />
     </>
   )
 }

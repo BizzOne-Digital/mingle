@@ -13,8 +13,8 @@ export const site = {
 }
 
 export const nav: [string, string][] = [
-  ['/', 'Home'], ['/about', 'About'], ['/services', 'Services'], ['/pricing', 'Pricing'], ['/gallery', 'Gallery'], ['/testimonials', 'Testimonials'],
-  ['/faq', 'FAQ'], ['/team', 'Our Team'], ['/blogs', 'Blogs'], ['/contact', 'Contact'],
+  ['/', 'Home'], ['/about', 'About'], ['/offerings', 'Offerings'], ['/fun-and-games', 'Fun & Games'], ['/pricing', 'Pricing'],
+  ['/gallery', 'Gallery'], ['/testimonials', 'Testimonials'], ['/faq', 'FAQ'], ['/contact', 'Contact'],
 ]
 
 export const audiences = [
@@ -27,21 +27,23 @@ export const offerings = [
   'Interactive experiences', 'Creative experiences', 'Beautiful event vignettes',
 ]
 
-// The client's own photos from the live the-mingle.com (public/images/live). Replace any of them from Admin → Pages / Services.
+// The client's own photos from the live the-mingle.com (public/images/live). Replace any of them from Admin → Pages / Services (shown as Offerings).
 const live = (file: string) => `/images/live/${file}`
 export const defaultImages: Record<string, string> = {
-  heroImage: live('the-mingle-events.jpg'),
-  introImage: live('the-mingle.jpg'),
-  aboutImage: live('the-mingle-events.jpg'),
-  pricingImage: live('the-mingle-bike.jpg'),
+  heroImage: live('the-mingle.jpg'), // the Bliss Bar bride
+  introImage: live('celebrations.jpg'),
+  aboutImage: live('a-little-romance.png'),
+  pricingImage: live('pop-pop-fizz.jpg'),
+  // Golf / lawn-game photos: Home "Fun & Games" section and the Fun & Games page, not the wedding hero.
+  interactiveImage: live('the-mingle-events.jpg'),
   pricingStartingPrice: '$800 plus supplies',
 }
 
 // Shown on /gallery until real photos are uploaded to Admin → Gallery.
 export const defaultGallery = [
-  'pop-pop-fizz.jpg', 'bliss-bar.jpg', '19th-hole.jpg', 'celebrations.jpg', 'boot-scoot.jpg', 'a-little-romance.png', 'bark-bar.jpg',
-  'bark-bar-cart-with-dogs.jpg', 'bark-bar-bone-sign-side-view.jpg', 'bark-bar-treats-display.jpg', 'bark-bar-birthday-party.jpg',
-  'celebrations-kids-birthday-party.jpg', 'celebrations-party-scene.jpg', 'romance-candlelit-proposal.jpg',
+  'the-mingle.jpg', 'pop-pop-fizz.jpg', 'bliss-bar.jpg', 'celebrations.jpg', 'boot-scoot.jpg', 'a-little-romance.png', 'the-mingle-events.jpg',
+  '19th-hole.jpg', 'bark-bar.jpg', 'bark-bar-cart-with-dogs.jpg', 'bark-bar-bone-sign-side-view.jpg', 'bark-bar-treats-display.jpg',
+  'bark-bar-birthday-party.jpg', 'celebrations-kids-birthday-party.jpg', 'celebrations-party-scene.jpg',
 ].map((f) => ({ url: live(f), filename: f }))
 
 export const defaultServices = [

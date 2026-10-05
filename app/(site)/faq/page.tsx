@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import { AudienceBand, EmptyState, PageHead } from '@/components/site'
+import { BookCta, EmptyState, PageHead } from '@/components/site'
 import { listPublic } from '@/lib/data'
 
 export const metadata = {
@@ -18,7 +18,7 @@ export default async function Faq() {
         <div className="faq-list">{faqs.map((f) => <details key={f._id ?? f.question}><summary>{f.question}<ChevronDown aria-hidden="true" /></summary><p>{f.answer}</p></details>)}</div>
       )}
       {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />}
-      <AudienceBand />
+      <BookCta />
     </>
   )
 }

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import { AudienceBand, Img, serviceImage } from '@/components/site'
+import { BookCta, Img, serviceImage } from '@/components/site'
 import { getOne } from '@/lib/data'
 import { audiences, site } from '@/lib/site'
 
@@ -12,17 +12,17 @@ const find = async (params: Props['params']) => getOne('services', { slug: (awai
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const s = await find(params)
   if (!s) return { title: 'Not found' }
-  return { title: s.name, description: s.description, alternates: { canonical: `/services/${s.slug}` } }
+  return { title: s.name, description: s.description, alternates: { canonical: `/offerings/${s.slug}` } }
 }
 
 // Layout of the live site's concept detail page: back link, wide image, title, details + price sidebar.
-export default async function Service({ params }: Props) {
+export default async function Offering({ params }: Props) {
   const s = await find(params)
   if (!s) notFound()
   const book = `/booking?service=${encodeURIComponent(s.name)}`
   return (
     <>
-      <Link className="concept-back" href="/services">← All services</Link>
+      <Link className="concept-back" href="/offerings">← All offerings</Link>
       <div className="concept-hero"><Img natural src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
       <div className="concept-intro">
         <h1 className="concept-title">{s.name}</h1>
@@ -43,7 +43,7 @@ export default async function Service({ params }: Props) {
           <a className="btn-outline btn-whatsapp" href={site.whatsappHref} target="_blank" rel="noreferrer"><MessageCircle size={16} aria-hidden="true" />WhatsApp us</a>
         </aside>
       </div>
-      <AudienceBand />
+      <BookCta />
     </>
   )
 }

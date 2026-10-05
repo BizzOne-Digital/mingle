@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Mail, MessageCircle, Phone } from 'lucide-react'
-import { audiences, defaultImages, defaultServices, nav, site } from '@/lib/site'
+import { audiences, defaultImages, defaultServices, site } from '@/lib/site'
 import { resolveImage } from '@/lib/uploads'
 
 /** `natural` shows the whole photo at its own proportions (no cropping); otherwise it fills a sized frame. */
@@ -14,30 +14,38 @@ export function Img({ src, fallback, alt, sizes, priority, natural }: { src?: st
 // A service's own live-site photo when its saved image is missing or legacy.
 export const serviceImage = (slug: string) => defaultServices.find((d) => d.slug === slug)?.image ?? defaultImages.introImage
 
-/** Live-site page header: left-aligned with a rule (concepts page) or centred (contact page). */
-export function PageHead({ label, title, intro, center }: { label: string; title: React.ReactNode; intro?: string; center?: boolean }) {
+/** Page header: left-aligned with a rule, or centred. `cta` adds an early "Book your date" link. */
+export function PageHead({ label, title, intro, center, cta }: { label: string; title: React.ReactNode; intro?: string; center?: boolean; cta?: boolean }) {
   return (
     <div className={`page-head${center ? ' center' : ''}`}>
       <p className="section-label">{label}</p>
       <h1>{title}</h1>
       {intro && <p className="lead">{intro}</p>}
+      {cta && <div className="actions"><Link className="btn-pink" href="/booking">Book your date</Link></div>}
     </div>
   )
 }
 
-/** The live site's black "Also perfect for" band. */
-export function Band({ label, children, cta = true }: { label: string; children: React.ReactNode; cta?: boolean }) {
+/** The black "Also perfect for" band (who The Mingle serves). */
+export function AudienceBand() {
   return (
     <section className="band">
-      <p className="kicker">{label}</p>
-      <p>{children}</p>
-      {cta && <div className="actions"><Link className="btn-pink" href="/booking">Book your event</Link><Link className="btn-outline" href="/contact">Contact us</Link></div>}
+      <p className="kicker">Also perfect for</p>
+      <p>{audiences.join(' · ')} · <span className="accent">Celebrations across the Kansas City area</span></p>
     </section>
   )
 }
 
-export function AudienceBand() {
-  return <Band label="Also perfect for">{audiences.join(' · ')} · <span className="accent">Celebrations across the Kansas City area</span></Band>
+/** Closing call to action used at the end of every public page — always links to /booking. */
+export function BookCta({ title = <>Let&apos;s plan <span className="pink">your day.</span></>, text = 'Tell us about your event and we will shape an experience around your guests, your vision and your budget.' }: { title?: React.ReactNode; text?: string }) {
+  return (
+    <section className="book-cta" aria-label="Book The Mingle">
+      <p className="kicker">Reserve your date</p>
+      <h2>{title}</h2>
+      <p className="lead">{text}</p>
+      <div className="actions"><Link className="btn-pink" href="/booking">Book your date</Link><Link className="btn-outline" href="/contact">Contact us</Link></div>
+    </section>
+  )
 }
 
 export function EmptyState({ title, text }: { title: string; text: string }) {
@@ -58,7 +66,7 @@ export function ConceptGrid({ services }: { services: any[] }) {
   return (
     <div className="concepts-grid">
       {services.map((s, i) => (
-        <Link className="concept-card" key={s._id ?? s.slug} href={`/services/${s.slug}`}>
+        <Link className="concept-card" key={s._id ?? s.slug} href={`/offerings/${s.slug}`}>
           <div className="card-img"><Img src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 640px) 100vw, (max-width: 860px) 50vw, 360px" /></div>
           <div className="card-body">
             <p className="card-num">{String(i + 1).padStart(2, '0')}</p>
@@ -111,22 +119,49 @@ export function ContactCards() {
   )
 }
 
+/** Offerings strip: two identical sets scroll right → left; translating by exactly -50% makes the loop seamless. */
+export function OfferingsMarquee({ items }: { items: string[] }) {
+  if (!items.length) return null
+  const set = [...items, ...items] // one set is wider than the widest screens, so no gap ever shows
+  const row = (key: string) => <ul className="marquee-set" key={key}>{set.map((t, i) => <li key={i}>{t}<span className="marquee-mark">✦</span></li>)}</ul>
+  return (
+    <section className="marquee" aria-label="Our offerings">
+      <p className="sr-only">Our offerings: {items.join(', ')}.</p>
+      <div className="marquee-track" aria-hidden="true">{row('a')}{row('b')}</div>
+    </section>
+  )
+}
+
+const footerCols: [string, [string, string][]][] = [
+  ['Explore', [['/', 'Home'], ['/about', 'About'], ['/offerings', 'Offerings'], ['/fun-and-games', 'Fun & Games'], ['/gallery', 'Gallery']]],
+  ['Plan your event', [['/pricing', 'Pricing'], ['/booking', 'Booking'], ['/faq', 'FAQ'], ['/testimonials', 'Testimonials'], ['/contact', 'Contact']]],
+]
+
 export function Footer() {
   return (
     <footer className="site-footer">
-      <div>
-        <Image src={site.logo} alt="The Mingle" width={150} height={69} />
-        <p className="footer-text">Unique, curated experiences for your event.</p>
+      <div className="footer-inner">
+        <div className="footer-brand">
+          <Link href="/" className="wordmark" aria-label="The Mingle home"><span>The</span>Mingle</Link>
+          <p className="footer-text">Unique, curated experiences for your event — curated carts, the Bliss Bar, Petal Passion and interactive vignettes that make every celebration unforgettable.</p>
+          <Link className="btn-pink" href="/booking">Book your date</Link>
+        </div>
+        {footerCols.map(([title, links]) => (
+          <nav key={title} aria-label={title}>
+            <p className="footer-col-title">{title}</p>
+            <ul className="footer-links">{links.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+          </nav>
+        ))}
+        <div>
+          <p className="footer-col-title">Get in touch</p>
+          <ContactLinks />
+          <p className="footer-area">Serving celebrations across the Kansas City area.</p>
+        </div>
       </div>
-      <div>
-        <p className="footer-col-title">Explore</p>
-        <div className="footer-nav">{[...nav, ['/booking', 'Booking'] as [string, string]].map(([href, label]) => <Link key={href} className="footer-link" href={href}>{label}</Link>)}</div>
+      <div className="footer-bottom">
+        <p>© {new Date().getFullYear()} The Mingle. All rights reserved.</p>
+        <p><Link href="/privacy">Privacy Policy</Link><span aria-hidden="true">·</span><Link href="/terms">Terms &amp; Conditions</Link></p>
       </div>
-      <div>
-        <p className="footer-col-title">Contact The Mingle</p>
-        <ContactLinks />
-      </div>
-      <div className="footer-bottom">© {new Date().getFullYear()} The Mingle. All rights reserved.</div>
     </footer>
   )
 }

@@ -87,11 +87,12 @@ export const resources: Record<string, Resource> = {
 
 // Admin-editable page images and pricing copy (stored as key/value Settings).
 export const settingsFields: Field[] = [
-  { name: 'heroImage', label: 'Home — hero image', type: 'image' },
+  { name: 'heroImage', label: 'Home — hero image (leave empty to use the bride photo)', type: 'image' },
   { name: 'heroSecondImage', label: 'Home — image under the hero (hidden until uploaded)', type: 'image' },
   { name: 'introImage', label: 'Home — introduction image', type: 'image' },
+  { name: 'interactiveImage', label: 'Fun & Games image (Home section + Fun & Games page)', type: 'image' },
   { name: 'aboutImage', label: 'About page image', type: 'image' },
-  { name: 'pricingImage', label: 'Pricing page image', type: 'image' },
+  { name: 'pricingImage', label: 'Pricing page — feature image', type: 'image' },
   { name: 'pricingStartingPrice', label: 'Curated carts starting price', type: 'text', max: 80, help: 'Shown as "Most curated carts start at approximately …"' },
 ]
 
