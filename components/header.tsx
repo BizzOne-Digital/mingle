@@ -15,7 +15,8 @@ export default function Header() {
 
   useEffect(() => setOpen(false), [path])
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
+    // Hysteresis: separate on/off points so tiny scroll movements near the threshold can't flicker the state.
+    const onScroll = () => setScrolled((was) => (was ? window.scrollY > 4 : window.scrollY > 24))
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })

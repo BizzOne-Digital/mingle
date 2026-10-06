@@ -1,13 +1,12 @@
 import Link from 'next/link'
-import { SettingsForm } from '@/components/admin'
-import { settingsFields } from '@/lib/content'
+import { PagesEditor } from '@/components/admin'
 
 export default function PricingAdmin() {
   return (
     <>
       <h1>Pricing</h1>
-      <p className="sub">The curated carts starting price appears on the Home, Pricing and FAQ pages. Per-experience starting prices are set on each <Link href="/admin/services">service</Link>.</p>
-      <SettingsForm fields={settingsFields.filter((f) => f.name === 'pricingStartingPrice')} />
+      <p className="sub">The only two prices shown on the website (Pricing page and the Curated Carts offering). If you change them, also update the pricing answer under <Link href="/admin/faqs">FAQ</Link>.</p>
+      <PagesEditor groups={['Pricing']} />
     </>
   )
 }

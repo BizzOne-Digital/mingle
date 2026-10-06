@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BookCta, Img, PageHead, serviceImage } from '@/components/site'
+import { Accent, BookCta, Img, PageHead, serviceImage } from '@/components/site'
 import { getOne, getSettings } from '@/lib/data'
 import { defaultImages, defaultServices } from '@/lib/site'
 
@@ -17,7 +17,7 @@ export default async function FunAndGames() {
   const blocks = [interactive ?? fallback('interactive-experiences'), carts ?? fallback('curated-carts')]
   return (
     <>
-      <PageHead label="Fun & Games" title={<>Games your guests <span className="pink">gather around.</span></>} intro="Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design." cta />
+      <PageHead label="Fun & Games" title={<Accent text={settings.funTitle} />} intro={settings.funIntro} cta />
       <figure className="feature-image">
         <div className="feature-frame"><Img src={settings.interactiveImage} fallback={defaultImages.interactiveImage} alt="Guests playing a lawn putting game at a Mingle event" sizes="(max-width: 1120px) 100vw, 1072px" priority /></div>
       </figure>
@@ -28,12 +28,11 @@ export default async function FunAndGames() {
             <p className="kicker">{i === 0 ? 'Interactive experiences' : 'Food & games'}</p>
             <h2>{s.name}</h2>
             <p>{s.description}</p>
-            {s.startingPrice && <p className="tagline">{s.startingPrice}</p>}
             <div className="actions"><Link className="btn-pink" href={`/booking?service=${encodeURIComponent(s.name)}`}>Book this experience</Link><Link className="btn-outline" href={`/offerings/${s.slug}`}>View details</Link></div>
           </div>
         </section>
       ))}
-      <BookCta title={<>Bring the games to <span className="pink">your celebration.</span></>} />
+      <BookCta />
     </>
   )
 }

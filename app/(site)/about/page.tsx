@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { AudienceBand, BookCta, ContactLinks, Img } from '@/components/site'
+import { Accent, AudienceBand, BookCta, ContactLinks, Img, Paragraphs } from '@/components/site'
 import { getSettings } from '@/lib/data'
 import { defaultImages, offerings } from '@/lib/site'
 
@@ -18,17 +18,13 @@ export default async function About() {
       <div className="about-content">
         <div>
           <p className="section-label" style={{ marginBottom: 12 }}>About The Mingle</p>
-          <h1 className="about-title">Experiences your guests take part in</h1>
-          <div className="about-body">
-            <p>The Mingle creates beautiful curated carts for food and games. Guests can build their own swag bag or takeaway bag at our Bliss Bar, and create their own floral moment at Petal Passion, our flower bar.</p>
-            <p>We specialize in fun, creative, interactive and beautiful vignettes — each one curated around your event, your guests and the way you want them to feel.</p>
-            <p>The goal is simple: to make your event extra special and absolutely unforgettable.</p>
-          </div>
+          <h1 className="about-title">{settings.aboutTitle}</h1>
+          <div className="about-body"><Paragraphs text={settings.aboutText} /></div>
           <p className="col-title">What we specialize in</p>
           <ul className="includes-list single">{offerings.map((o) => <li key={o}>{o}</li>)}</ul>
         </div>
         <div>
-          <blockquote className="about-quote">“We specialize in fun, creative, interactive and beautiful vignettes to make your event extra special and absolutely <span className="pink">unforgettable.</span>”</blockquote>
+          <blockquote className="about-quote">“<Accent text={settings.aboutQuote} />”</blockquote>
           <Link className="btn-pink btn-block" href="/contact" style={{ padding: 16 }}>Let&apos;s connect</Link>
           <p className="col-title">Reach us directly</p>
           <ContactLinks />
@@ -36,6 +32,16 @@ export default async function About() {
           <Link className="text-link" href="/fun-and-games" style={{ marginTop: 0 }}>Fun &amp; Games →</Link>
         </div>
       </div>
+      {/* Meet Leslie — every part editable in Admin → Pages & text → About. */}
+      <section className={`leslie${settings.leslieImage ? '' : ' no-photo'}`} aria-labelledby="leslie-title">
+        {settings.leslieImage && <div className="leslie-photo"><Img natural src={settings.leslieImage} fallback={defaultImages.aboutImage} alt="Leslie Allison, founder of The Mingle" sizes="(max-width: 860px) 100vw, 420px" /></div>}
+        <div className="leslie-body">
+          <p className="kicker">{settings.leslieLabel}</p>
+          <h2 id="leslie-title"><Accent text={settings.leslieTitle} /></h2>
+          <div className="about-body"><Paragraphs text={settings.leslieText} /></div>
+          <Link className="btn-pink" href="/contact">Let&apos;s connect</Link>
+        </div>
+      </section>
       <AudienceBand />
       <BookCta />
     </>

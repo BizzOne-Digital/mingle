@@ -36,7 +36,6 @@ export const defaultImages: Record<string, string> = {
   pricingImage: live('pop-pop-fizz.jpg'),
   // Golf / lawn-game photos: Home "Fun & Games" section and the Fun & Games page, not the wedding hero.
   interactiveImage: live('the-mingle-events.jpg'),
-  pricingStartingPrice: '$800 plus supplies',
 }
 
 // Shown on /gallery until real photos are uploaded to Admin → Gallery.
@@ -47,15 +46,15 @@ export const defaultGallery = [
 ].map((f) => ({ url: live(f), filename: f }))
 
 export const defaultServices = [
-  { name: 'Curated Carts', slug: 'curated-carts', image: live('pop-pop-fizz.jpg'), startingPrice: 'Most start at approximately $800 plus supplies', featured: true, sortOrder: 1, active: true,
+  { name: 'Curated Carts', slug: 'curated-carts', image: live('pop-pop-fizz.jpg'), featured: true, sortOrder: 1, active: true,
     description: 'Beautifully styled carts built around food and games — curated for your event, your guests and your vision.' },
-  { name: 'Bliss Bar', slug: 'bliss-bar', image: live('bliss-bar.jpg'), startingPrice: '', featured: true, sortOrder: 2, active: true,
+  { name: 'Bliss Bar', slug: 'bliss-bar', image: live('bliss-bar.jpg'), featured: true, sortOrder: 2, active: true,
     description: 'A build-your-own takeaway experience where guests curate their own swag bag to carry the celebration home.' },
-  { name: 'Petal Passion', slug: 'petal-passion', image: live('a-little-romance.png'), startingPrice: '', featured: true, sortOrder: 3, active: true,
+  { name: 'Petal Passion', slug: 'petal-passion', image: live('a-little-romance.png'), featured: true, sortOrder: 3, active: true,
     description: 'Our flower bar. Guests create their own floral moment, arranged with intention and made to be remembered.' },
-  { name: 'Interactive Experiences', slug: 'interactive-experiences', image: live('19th-hole.jpg'), startingPrice: '', featured: false, sortOrder: 4, active: true,
+  { name: 'Interactive Experiences', slug: 'interactive-experiences', image: live('19th-hole.jpg'), featured: false, sortOrder: 4, active: true,
     description: 'Interactive stations that get guests mingling, playing and creating together — fun by design.' },
-  { name: 'Event Vignettes', slug: 'event-vignettes', image: live('celebrations.jpg'), startingPrice: '', featured: false, sortOrder: 5, active: true,
+  { name: 'Event Vignettes', slug: 'event-vignettes', image: live('celebrations.jpg'), featured: false, sortOrder: 5, active: true,
     description: 'Beautiful, creative and interactive setups styled to make your event extra special and unforgettable.' },
 ]
 
@@ -66,7 +65,7 @@ export const defaultFaqs = [
   { question: 'Can an experience be customized?', sortOrder: 2, active: true,
     answer: 'Yes. Every Mingle experience is curated around your event, your guests and your vision.' },
   { question: 'How does pricing work?', sortOrder: 3, active: true,
-    answer: 'Most curated carts start at approximately $800 plus supplies. We will customize a price plan around your budget, and your final quote is confirmed in a custom proposal.' },
+    answer: 'Curated carts start from $800+ and wedding proposals start from $1,000. Your final quote is confirmed in a custom proposal built around your event and budget.' },
   { question: 'How do I book?', sortOrder: 4, active: true,
     answer: 'Send an inquiry through our booking page, or call, text or WhatsApp us at 913-706-2347. We will follow up to talk through your vision.' },
   { question: 'How do I pay a deposit?', sortOrder: 5, active: true,

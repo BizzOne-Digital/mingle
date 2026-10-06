@@ -2,7 +2,7 @@
 // Pure module (no imports) so it is safe on the client and in the self-check script.
 
 export type FieldType = 'text' | 'textarea' | 'slug' | 'email' | 'tel' | 'number' | 'bool' | 'date' | 'select' | 'image'
-export type Field = { name: string; label: string; type: FieldType; required?: boolean; max?: number; options?: string[]; help?: string; default?: unknown }
+export type Field = { name: string; label: string; type: FieldType; required?: boolean; max?: number; options?: string[]; help?: string; default?: unknown; group?: string }
 export type Resource = { label: string; model: string; fields: Field[]; columns: string[]; sort: Record<string, 1 | -1>; folder: string; unique?: string }
 
 export const INQUIRY_STATUSES = ['new', 'contacted', 'booked', 'completed', 'cancelled']
@@ -16,13 +16,12 @@ const featured: Field = { name: 'featured', label: 'Featured', type: 'bool', def
 
 export const resources: Record<string, Resource> = {
   services: {
-    label: 'Services', model: 'Service', folder: 'products', unique: 'slug', sort: { sortOrder: 1, createdAt: 1 }, columns: ['name', 'startingPrice', 'active'],
+    label: 'Offerings', model: 'Service', folder: 'products', unique: 'slug', sort: { sortOrder: 1, createdAt: 1 }, columns: ['name', 'featured', 'active'],
     fields: [
       { name: 'name', label: 'Name', type: 'text', required: true, max: 80 },
       { name: 'slug', label: 'Slug', type: 'slug', required: true, max: 80, help: 'Lowercase words separated by hyphens, e.g. bliss-bar' },
       { name: 'description', label: 'Description', type: 'textarea', required: true, max: 800 },
       { name: 'image', label: 'Image', type: 'image' },
-      { name: 'startingPrice', label: 'Starting price (optional)', type: 'text', max: 80, help: 'Leave blank if this experience has no published price.' },
       featured, sortOrder, active,
     ],
   },
@@ -44,31 +43,6 @@ export const resources: Record<string, Resource> = {
       sortOrder, active,
     ],
   },
-  team: {
-    label: 'Team', model: 'TeamMember', folder: 'pages', sort: { sortOrder: 1, createdAt: 1 }, columns: ['name', 'role', 'active'],
-    fields: [
-      { name: 'name', label: 'Name', type: 'text', required: true, max: 100 },
-      { name: 'role', label: 'Role', type: 'text', max: 100 },
-      { name: 'bio', label: 'Bio', type: 'textarea', max: 2000 },
-      { name: 'image', label: 'Photo', type: 'image' },
-      sortOrder, active,
-    ],
-  },
-  blogs: {
-    label: 'Blogs', model: 'BlogPost', folder: 'pages', unique: 'slug', sort: { publishedAt: -1, createdAt: -1 }, columns: ['title', 'published', 'publishedAt'],
-    fields: [
-      { name: 'title', label: 'Title', type: 'text', required: true, max: 150 },
-      { name: 'slug', label: 'Slug', type: 'slug', required: true, max: 120 },
-      { name: 'excerpt', label: 'Excerpt', type: 'textarea', max: 400 },
-      { name: 'content', label: 'Content', type: 'textarea', max: 50000, help: 'Separate paragraphs with a blank line.' },
-      { name: 'image', label: 'Cover image', type: 'image' },
-      { name: 'published', label: 'Published', type: 'bool', default: false },
-      { name: 'publishedAt', label: 'Publish date', type: 'date' },
-      { name: 'author', label: 'Author', type: 'text', max: 100 },
-      { name: 'seoTitle', label: 'SEO title', type: 'text', max: 70 },
-      { name: 'seoDescription', label: 'SEO description', type: 'textarea', max: 170 },
-    ],
-  },
   inquiries: {
     label: 'Inquiries', model: 'Inquiry', folder: 'misc', sort: { createdAt: -1 }, columns: [],
     fields: [
@@ -85,16 +59,80 @@ export const resources: Record<string, Resource> = {
   },
 }
 
-// Admin-editable page images and pricing copy (stored as key/value Settings).
+// Everything on the public pages an admin can edit (Admin → Pages), stored as key/value Settings.
+// `default` is the live wording, used until an admin saves a change. Image defaults live in lib/site.ts.
+const ACCENT = 'Wrap words in *asterisks* to make them pink. Use | for a line break.'
+const t = (group: string, name: string, label: string, def: string, max = 200, help?: string): Field => ({ group, name, label, type: 'text', max, default: def, help })
+const p = (group: string, name: string, label: string, def: string, max = 2000, help?: string): Field => ({ group, name, label, type: 'textarea', max, default: def, help })
+const img = (group: string, name: string, label: string, help?: string): Field => ({ group, name, label, type: 'image', help })
+
+export const PAGE_GROUPS = ['Home', 'About', 'Offerings', 'Fun & Games', 'Pricing', 'Gallery', 'Testimonials', 'FAQ', 'Contact', 'Booking', 'Booking banner & footer']
+
 export const settingsFields: Field[] = [
-  { name: 'heroImage', label: 'Home — hero image (leave empty to use the bride photo)', type: 'image' },
-  { name: 'heroSecondImage', label: 'Home — image under the hero (hidden until uploaded)', type: 'image' },
-  { name: 'introImage', label: 'Home — introduction image', type: 'image' },
-  { name: 'interactiveImage', label: 'Fun & Games image (Home section + Fun & Games page)', type: 'image' },
-  { name: 'aboutImage', label: 'About page image', type: 'image' },
-  { name: 'pricingImage', label: 'Pricing page — feature image', type: 'image' },
-  { name: 'pricingStartingPrice', label: 'Curated carts starting price', type: 'text', max: 80, help: 'Shown as "Most curated carts start at approximately …"' },
+  t('Home', 'heroLabel', 'Hero — small label', 'Curated · Interactive · Unforgettable'),
+  t('Home', 'heroTitle', 'Hero — headline', 'Unique, *curated* experiences for *your event.*', 140, ACCENT),
+  p('Home', 'heroText', 'Hero — text', 'Beautiful curated carts for food and games, build-your-own takeaway bags, our Bliss Bar and our Petal Passion flower bar — made to make your event extra special.', 400),
+  t('Home', 'heroNote', 'Hero — bottom line', 'Weddings · Corporate events · Grand openings · Celebrations across Kansas City'),
+  img('Home', 'heroImage', 'Hero image', 'Leave empty to use the bride photo.'),
+  img('Home', 'heroSecondImage', 'Image under the hero', 'Hidden until an image is uploaded.'),
+  t('Home', 'welcomeLabel', 'Welcome — small label', 'Welcome to The Mingle'),
+  t('Home', 'welcomeTitle', 'Welcome — heading', 'Fun. Creative.|*Unforgettable.*', 140, ACCENT),
+  p('Home', 'welcomeText', 'Welcome — text', 'We specialize in fun, creative, interactive and beautiful vignettes — curated carts, build-your-own takeaway bags, the Bliss Bar and Petal Passion — to make your event extra special and absolutely unforgettable.', 600),
+  p('Home', 'welcomeTagline', 'Welcome — highlighted line', 'Planning a wedding, a corporate event, a school or church gathering, or a grand opening? Let us make it fun, festive and unforgettable.', 300),
+  img('Home', 'introImage', 'Welcome image'),
+  t('Home', 'homeOfferingsTitle', 'Offerings section — heading', 'Choose your experience', 120),
+  t('Home', 'homeFunTitle', 'Fun & Games section — heading', 'Games your guests|*gather around.*', 140, ACCENT),
+  p('Home', 'homeFunText', 'Fun & Games section — text', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.', 400, 'The image is set under Fun & Games.'),
+
+  img('About', 'aboutImage', 'Banner image'),
+  t('About', 'aboutTitle', 'Heading', 'Experiences your guests take part in', 140),
+  p('About', 'aboutText', 'Story', 'The Mingle creates beautiful curated carts for food and games. Guests can build their own swag bag or takeaway bag at our Bliss Bar, and create their own floral moment at Petal Passion, our flower bar.\n\nWe specialize in fun, creative, interactive and beautiful vignettes — each one curated around your event, your guests and the way you want them to feel.\n\nThe goal is simple: to make your event extra special and absolutely unforgettable.', 3000, 'Separate paragraphs with a blank line.'),
+  p('About', 'aboutQuote', 'Quote', 'We specialize in fun, creative, interactive and beautiful vignettes to make your event extra special and absolutely *unforgettable.*', 400, ACCENT),
+
+  t('About', 'leslieLabel', 'Meet Leslie — small label', 'Meet Leslie', 80),
+  t('About', 'leslieTitle', 'Meet Leslie — heading', 'The mind behind *The Mingle*', 140, ACCENT),
+  p('About', 'leslieText', 'Meet Leslie — story', "If we haven't met before, hi there! I'm Leslie Allison — whether you remember me as Clark and Cole's mom from Blue Valley North, spotted me at Fabulous Finds & Design, or know me as your South Johnson County neighbor of 35 years.\n\nI'm also the owner of Premium Cabinet Studio, and I bring extensive experience in corporate events to everything I do. Now I'm here to collaborate with you on creating unique, memorable experiences.\n\nWith a flair for detail, a love of fun, and an eye for smart design — I can't wait to meet you and make your event unforgettable.", 3000, 'Separate paragraphs with a blank line.'),
+  img('About', 'leslieImage', 'Meet Leslie — photo', 'Portrait works best. The section shows text only until a photo is uploaded.'),
+
+  t('Offerings', 'offeringsTitle', 'Heading', 'Choose your experience', 120),
+  p('Offerings', 'offeringsIntro', 'Intro', 'Curated, interactive experiences designed around your event. Our menu continues to grow as new selections are added.', 400, 'Each offering is edited under Offerings.'),
+
+  t('Fun & Games', 'funTitle', 'Heading', 'Affordable *luxury.*', 140, ACCENT),
+  p('Fun & Games', 'funIntro', 'Intro', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.', 400),
+  img('Fun & Games', 'interactiveImage', 'Fun & Games image', 'Used on the Fun & Games page and the Home page section.'),
+
+  t('Pricing', 'pricingTitle', 'Heading', 'A price plan made for your event', 140),
+  p('Pricing', 'pricingIntro', 'Intro', 'Every Mingle experience is curated for your event, so every price plan is too.', 400),
+  t('Pricing', 'cartsPrice', 'Curated carts — starting price', '$800+', 40, 'Shown as "Starting from …"'),
+  t('Pricing', 'proposalPrice', 'Wedding proposals — starting price', '$1,000', 40, 'Shown as "Starting from …"'),
+  t('Pricing', 'pricingFootnote', 'Line under the prices', 'Your final quote is confirmed in a custom proposal built around your event.', 200),
+  img('Pricing', 'pricingImage', 'Feature image'),
+  p('Pricing', 'pricingQuote', 'Feature image caption', 'Every detail is curated around your guests, your vision and your budget.', 300),
+
+  t('Gallery', 'galleryTitle', 'Heading', 'Moments we have styled', 120, 'Also used for the gallery section on Home. Photos are managed under Gallery.'),
+  p('Gallery', 'galleryIntro', 'Intro', 'A look at The Mingle experiences in action.', 300),
+
+  t('Testimonials', 'testimonialsTitle', 'Heading', 'Kind words', 120),
+  p('Testimonials', 'testimonialsIntro', 'Intro', 'What our clients say about celebrating with The Mingle.', 300),
+
+  t('FAQ', 'faqTitle', 'Heading', 'Good to know', 120),
+  p('FAQ', 'faqIntro', 'Intro', 'Everything you need to know before you book.', 300, 'Questions and answers are edited under FAQ.'),
+
+  t('Contact', 'contactTitle', 'Heading', "Let's make it *happen.*", 140, ACCENT),
+  p('Contact', 'contactIntro', 'Intro', 'Ready to book or just want to chat? Reach out — we would love to hear from you.', 300),
+
+  t('Booking', 'bookingTitle', 'Heading', 'Your event, *your way.*', 140, ACCENT),
+  p('Booking', 'bookingIntro', 'Intro', 'Share a little about what you are planning and we will take it from here.', 300),
+
+  t('Booking banner & footer', 'ctaTitle', 'Closing banner — heading (every page)', "Let's plan *your day.*", 140, ACCENT),
+  p('Booking banner & footer', 'ctaText', 'Closing banner — text', 'Tell us about your event and we will shape an experience around your guests, your vision and your budget.', 400),
+  p('Booking banner & footer', 'footerText', 'Footer — brand statement', 'Unique, curated experiences for your event — curated carts, the Bliss Bar, Petal Passion and interactive vignettes that make every celebration unforgettable.', 400),
+
+  // Built-in (live-site) gallery photos hidden from /gallery — managed in Admin → Gallery (no group: never shown in a form).
+  { name: 'galleryHidden', label: 'Hidden gallery photos', type: 'textarea', max: 5000 },
 ]
+
+export const settingsDefaults = Object.fromEntries(settingsFields.filter((f) => f.default !== undefined).map((f) => [f.name, String(f.default)]))
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const TEL = /^[+\d\s().-]{7,30}$/

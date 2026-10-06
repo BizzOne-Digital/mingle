@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { INQUIRY_STATUSES, resources, UPLOAD_FOLDERS, type Field } from '@/lib/content'
+import { INQUIRY_STATUSES, PAGE_GROUPS, resources, settingsFields, UPLOAD_FOLDERS, type Field } from '@/lib/content'
+import { defaultGallery, site } from '@/lib/site'
 
 /* ---------- shared ---------- */
 
@@ -50,21 +51,30 @@ function Dialog({ open, title, onClose, children }: { open: boolean; title: stri
 
 /* ---------- navigation / auth ---------- */
 
-const adminNav: [string, string][] = [
-  ['/admin', 'Dashboard'], ['/admin/inquiries', 'Inquiries'], ['/admin/services', 'Services'], ['/admin/pricing', 'Pricing'], ['/admin/gallery', 'Gallery'],
-  ['/admin/pages', 'Pages'], ['/admin/testimonials', 'Testimonials'], ['/admin/faqs', 'FAQ'], ['/admin/team', 'Team'], ['/admin/blogs', 'Blogs'],
-  ['/admin/media', 'Media / Uploads'], ['/admin/settings', 'Settings'],
+const adminNav: [string, [string, string][]][] = [
+  ['Overview', [['/admin', 'Dashboard'], ['/admin/inquiries', 'Inquiries']]],
+  ['Website', [['/admin/pages', 'Pages & text'], ['/admin/services', 'Offerings'], ['/admin/pricing', 'Pricing'], ['/admin/gallery', 'Gallery'], ['/admin/testimonials', 'Testimonials'], ['/admin/faqs', 'FAQ']]],
+  ['Library', [['/admin/media', 'All images']]],
+  ['System', [['/admin/settings', 'Settings']]],
 ]
 
 export function AdminNav() {
   const path = usePathname()
   const router = useRouter()
+  const current = (href: string) => ((href === '/admin' ? path === href : path.startsWith(href)) ? 'page' : undefined)
   return (
     <aside className="admin-side">
-      <Link className="brand-mini" href="/admin">The <span>Mingle</span> admin</Link>
-      <nav aria-label="Admin">{adminNav.map(([href, label]) => <Link key={href} href={href} aria-current={(href === '/admin' ? path === href : path.startsWith(href)) ? 'page' : undefined}>{label}</Link>)}</nav>
-      <button onClick={async () => { await fetch('/api/admin/logout', { method: 'POST' }); router.replace('/admin/login') }}>Sign out</button>
-      <Link href="/" style={{ display: 'block', margin: '14px 10px 0', color: '#aaa' }}>View website →</Link>
+      <Link className="admin-logo" href="/admin" aria-label="Admin dashboard"><img src={site.logo} alt="The Mingle" /><span>Admin</span></Link>
+      {adminNav.map(([group, links]) => (
+        <nav key={group} aria-label={group}>
+          <p className="admin-nav-title">{group}</p>
+          {links.map(([href, label]) => <Link key={href} href={href} aria-current={current(href)}>{label}</Link>)}
+        </nav>
+      ))}
+      <div className="admin-side-foot">
+        <a href="/" target="_blank" rel="noreferrer">View website ↗</a>
+        <button onClick={async () => { await fetch('/api/admin/logout', { method: 'POST' }); router.replace('/admin/login') }}>Sign out</button>
+      </div>
     </aside>
   )
 }
@@ -166,16 +176,16 @@ export function LocalImageField({ value, onChange, folder, label }: { value: str
   )
 }
 
-/* ---------- generic content CRUD (services, testimonials, faqs, team, blogs) ---------- */
+/* ---------- generic content CRUD (offerings, testimonials, faqs) ---------- */
 
-function FieldInput({ f, value, set, folder }: { f: Field; value: any; set: (v: any) => void; folder: string }) {
+function FieldInput({ f, value, set, folder, placeholder }: { f: Field; value: any; set: (v: any) => void; folder: string; placeholder?: string }) {
   const hint = f.help && <small>{f.help}</small>
   if (f.type === 'bool') return <label className="check"><input type="checkbox" checked={Boolean(value)} onChange={(e) => set(e.target.checked)} />{f.label}</label>
   if (f.type === 'image') return <div role="group" aria-label={f.label} style={{ display: 'grid', gap: 6 }}><strong style={{ fontSize: 13 }}>{f.label}</strong>{hint}<LocalImageField value={value || ''} onChange={set} folder={folder} label={f.label} /></div>
-  if (f.type === 'textarea') return <label>{f.label}{hint}<textarea value={value ?? ''} maxLength={f.max} required={f.required} rows={f.max && f.max > 3000 ? 14 : 4} onChange={(e) => set(e.target.value)} /></label>
+  if (f.type === 'textarea') return <label>{f.label}{hint}<textarea value={value ?? ''} placeholder={placeholder} maxLength={f.max} required={f.required} rows={f.max && f.max > 2000 ? 8 : 3} onChange={(e) => set(e.target.value)} /></label>
   const type = f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : f.type === 'email' ? 'email' : 'text'
   const v = f.type === 'date' ? String(value ?? '').slice(0, 10) : value ?? ''
-  return <label>{f.label}{hint}<input type={type} value={v} maxLength={f.max} required={f.required} min={f.type === 'number' ? 0 : undefined} onChange={(e) => set(e.target.value)} /></label>
+  return <label>{f.label}{hint}<input type={type} value={v} placeholder={placeholder} maxLength={f.max} required={f.required} min={f.type === 'number' ? 0 : undefined} onChange={(e) => set(e.target.value)} /></label>
 }
 
 export function CrudManager({ resource }: { resource: string }) {
@@ -391,25 +401,71 @@ export function MediaLibrary({ folder }: { folder?: string }) {
   )
 }
 
+/* ---------- built-in gallery photos (shipped with the site, so they can be hidden but not deleted) ---------- */
+
+export function BuiltInGallery() {
+  const [hidden, setHidden] = useState<Set<string> | null>(null)
+  const [busy, setBusy] = useState('')
+  useEffect(() => { api('/api/settings').then((r) => setHidden(new Set(String(r.settings.galleryHidden ?? '').split(',').filter(Boolean)))).catch((e) => { fail(e); setHidden(new Set()) }) }, [])
+  async function toggle(filename: string) {
+    const next = new Set(hidden)
+    next.has(filename) ? next.delete(filename) : next.add(filename)
+    setBusy(filename)
+    try {
+      await api('/api/settings', { method: 'PATCH', body: JSON.stringify({ galleryHidden: [...next].join(',') }) })
+      setHidden(next)
+      toast(next.has(filename) ? 'Removed from the gallery.' : 'Restored to the gallery.')
+    } catch (e) { fail(e) } finally { setBusy('') }
+  }
+  if (!hidden) return <p>Loading…</p>
+  return (
+    <div className="media-grid">
+      {defaultGallery.map((g) => {
+        const off = hidden.has(g.filename)
+        return (
+          <figure key={g.filename} style={{ opacity: off ? 0.45 : 1 }}>
+            <div className="thumb"><img src={g.url} alt={g.filename} loading="lazy" style={{ width: '100%', height: '100%' }} /></div>
+            <figcaption>
+              <span>{off ? 'Hidden from gallery' : 'Shown on gallery'}</span>
+              <div><button className={`btn${off ? '' : ' btn-danger'}`} disabled={busy === g.filename} onClick={() => toggle(g.filename)}>{off ? 'Restore' : 'Remove from gallery'}</button></div>
+            </figcaption>
+          </figure>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ---------- page images + pricing copy ---------- */
 
-export function SettingsForm({ fields }: { fields: Field[] }) {
+/** Admin → Pages & text: every editable page field, one panel per page, each saved on its own. */
+export function PagesEditor({ groups = PAGE_GROUPS }: { groups?: string[] }) {
   const [values, setValues] = useState<Json | null>(null)
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy] = useState('')
   useEffect(() => { api('/api/settings').then((r) => setValues(r.settings)).catch((e) => { fail(e); setValues({}) }) }, [])
-  async function save(e: React.FormEvent) {
+  async function save(group: string, e: React.FormEvent) {
     e.preventDefault()
-    setBusy(true)
-    const body = Object.fromEntries(fields.map((f) => [f.name, values?.[f.name] ?? '']))
-    try { const r = await api('/api/settings', { method: 'PATCH', body: JSON.stringify(body) }); setValues(r.settings); toast('Saved.') } catch (err) { fail(err) } finally { setBusy(false) }
+    setBusy(group)
+    const body = Object.fromEntries(settingsFields.filter((f) => f.group === group).map((f) => [f.name, values?.[f.name] ?? '']))
+    try { const r = await api('/api/settings', { method: 'PATCH', body: JSON.stringify(body) }); setValues(r.settings); toast(`${group} saved — live on the website now.`) } catch (err) { fail(err) } finally { setBusy('') }
   }
   if (!values) return <p>Loading…</p>
+  const anchor = (g: string) => g.toLowerCase().replace(/[^a-z]+/g, '-')
   return (
-    <form className="admin-form panel" onSubmit={save}>
-      {fields.map((f) => <FieldInput key={f.name} f={f} value={values[f.name]} set={(v) => setValues({ ...values, [f.name]: v })} folder="pages" />)}
-      <p><small>Leave an image empty to use the current temporary image.</small></p>
-      <div className="row-actions"><button className="btn btn-primary" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button></div>
-    </form>
+    <>
+      {groups.length > 1 && <nav className="admin-jump" aria-label="Jump to page">{groups.map((g) => <a key={g} href={`#${anchor(g)}`}>{g}</a>)}</nav>}
+      {groups.map((g) => {
+        const fields = settingsFields.filter((f) => f.group === g)
+        // An empty text field falls back to the default wording, so show the default as the placeholder.
+        return (
+          <form key={g} id={anchor(g)} className="admin-form panel admin-section" onSubmit={(e) => save(g, e)}>
+            <div className="admin-section-head"><h2>{g}</h2><button className="btn btn-primary" disabled={busy === g}>{busy === g ? 'Saving…' : 'Save'}</button></div>
+            {fields.map((f) => <FieldInput key={f.name} f={{ ...f, required: false }} value={values[f.name] ?? ''} placeholder={f.default as string | undefined} set={(v) => setValues({ ...values, [f.name]: v })} folder="pages" />)}
+          </form>
+        )
+      })}
+      <p className="sub">Tip: leave a text field empty to go back to the original wording; remove an image to go back to the built-in photo.</p>
+    </>
   )
 }
 

@@ -1,8 +1,10 @@
+import { Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Mail, MessageCircle, Phone } from 'lucide-react'
 import { audiences, defaultImages, defaultServices, site } from '@/lib/site'
 import { resolveImage } from '@/lib/uploads'
+import { getSettings } from '@/lib/data'
 
 /** `natural` shows the whole photo at its own proportions (no cropping); otherwise it fills a sized frame. */
 export function Img({ src, fallback, alt, sizes, priority, natural }: { src?: string; fallback: string; alt: string; sizes: string; priority?: boolean; natural?: boolean }) {
@@ -37,12 +39,26 @@ export function AudienceBand() {
 }
 
 /** Closing call to action used at the end of every public page — always links to /booking. */
-export function BookCta({ title = <>Let&apos;s plan <span className="pink">your day.</span></>, text = 'Tell us about your event and we will shape an experience around your guests, your vision and your budget.' }: { title?: React.ReactNode; text?: string }) {
+/** Admin-editable text: *word* → pink accent, | → line break (see the help text in Admin → Pages). */
+export function Accent({ text }: { text: string }) {
+  return <>{text.split('|').map((line, i) => (
+    <Fragment key={i}>{i > 0 && <br />}{line.split('*').map((part, j) => (j % 2 ? <span key={j} className="pink">{part}</span> : part))}</Fragment>
+  ))}</>
+}
+
+/** Admin-editable multi-paragraph text (paragraphs separated by a blank line). */
+export function Paragraphs({ text }: { text: string }) {
+  return <>{text.split(/\n\s*\n/).map((para, i) => <p key={i}>{para}</p>)}</>
+}
+
+/** Closing call to action used at the end of every public page — always links to /booking. Text: Admin → Pages. */
+export async function BookCta() {
+  const s = await getSettings()
   return (
     <section className="book-cta" aria-label="Book The Mingle">
       <p className="kicker">Reserve your date</p>
-      <h2>{title}</h2>
-      <p className="lead">{text}</p>
+      <h2><Accent text={s.ctaTitle} /></h2>
+      <p className="lead">{s.ctaText}</p>
       <div className="actions"><Link className="btn-pink" href="/booking">Book your date</Link><Link className="btn-outline" href="/contact">Contact us</Link></div>
     </section>
   )
@@ -72,7 +88,7 @@ export function ConceptGrid({ services }: { services: any[] }) {
             <p className="card-num">{String(i + 1).padStart(2, '0')}</p>
             <h3 className="card-name">{s.name}</h3>
             <p className="card-desc">{s.description}</p>
-            {s.startingPrice ? <p className="card-price">{s.startingPrice}</p> : <p className="card-more">Custom quote · View details</p>}
+            <p className="card-more">View details</p>
           </div>
         </Link>
       ))}
@@ -137,13 +153,15 @@ const footerCols: [string, [string, string][]][] = [
   ['Plan your event', [['/pricing', 'Pricing'], ['/booking', 'Booking'], ['/faq', 'FAQ'], ['/testimonials', 'Testimonials'], ['/contact', 'Contact']]],
 ]
 
-export function Footer() {
+export async function Footer() {
+  const { footerText } = await getSettings()
   return (
     <footer className="site-footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <Link href="/" className="wordmark" aria-label="The Mingle home"><span>The</span>Mingle</Link>
-          <p className="footer-text">Unique, curated experiences for your event — curated carts, the Bliss Bar, Petal Passion and interactive vignettes that make every celebration unforgettable.</p>
+          {/* The logo artwork has a white background, so it sits on a white plate in the dark footer. */}
+          <Link href="/" className="footer-logo" aria-label="The Mingle home"><Image src={site.logo} alt="The Mingle" width={190} height={88} /></Link>
+          <p className="footer-text">{footerText}</p>
           <Link className="btn-pink" href="/booking">Book your date</Link>
         </div>
         {footerCols.map(([title, links]) => (

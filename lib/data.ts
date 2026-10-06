@@ -1,4 +1,5 @@
-import { resources } from './content'
+import { cache } from 'react'
+import { resources, settingsDefaults } from './content'
 import { db, models, Setting, StoredUpload, toPlain } from './db'
 import { defaultFaqs, defaultGallery, defaultImages, defaultServices } from './site'
 
@@ -28,25 +29,27 @@ export async function getOne(resource: string, filter: Record<string, unknown>):
   }
 }
 
-export const getBlog = (slug: string) => getOne('blogs', { slug, published: true })
-
 // Gallery = admin uploads in the "gallery" folder (newest first), followed by the client's live-site photos.
 export async function listGallery(): Promise<{ url: string; filename: string }[]> {
   try {
     await db()
     const rows = await StoredUpload.find({ folder: 'gallery' }).select('folder filename').sort({ createdAt: -1 }).limit(200).lean()
-    return [...rows.map((r: any) => ({ url: `/api/uploads/${r.folder}/${r.filename}`, filename: r.filename })), ...defaultGallery]
+    const hidden = new Set(String((await Setting.findOne({ key: 'galleryHidden' }).lean() as any)?.value ?? '').split(',').filter(Boolean))
+    return [...rows.map((r: any) => ({ url: `/api/uploads/${r.folder}/${r.filename}`, filename: r.filename })), ...defaultGallery.filter((g) => !hidden.has(g.filename))]
   } catch {
     return defaultGallery
   }
 }
 
-export async function getSettings(): Promise<Record<string, string>> {
+// Page images + text: built-in defaults, overridden by anything saved in Admin → Pages. Cached per request
+// because the layout (footer), page and closing banner all read it.
+export const getSettings = cache(async (): Promise<Record<string, string>> => {
+  const base = { ...defaultImages, ...settingsDefaults }
   try {
     await db()
     const rows = await Setting.find().lean()
-    return { ...defaultImages, ...Object.fromEntries(rows.filter((r: any) => r.value).map((r: any) => [r.key, r.value])) }
+    return { ...base, ...Object.fromEntries(rows.filter((r: any) => r.value).map((r: any) => [r.key, r.value])) }
   } catch {
-    return { ...defaultImages }
+    return base
   }
-}
+})

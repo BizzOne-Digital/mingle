@@ -1,6 +1,6 @@
 import BookingForm from '@/components/booking-form'
-import { ContactLinks, PageHead } from '@/components/site'
-import { listPublic } from '@/lib/data'
+import { Accent, ContactLinks, PageHead } from '@/components/site'
+import { getSettings, listPublic } from '@/lib/data'
 
 export const metadata = {
   title: 'Book Your Experience',
@@ -15,11 +15,11 @@ const steps = [
 ]
 
 export default async function Booking({ searchParams }: { searchParams: Promise<{ service?: string }> }) {
-  const [{ service }, services] = await Promise.all([searchParams, listPublic('services')])
+  const [{ service }, services, settings] = await Promise.all([searchParams, listPublic('services'), getSettings()])
   const names = services.map((s) => s.name as string)
   return (
     <>
-      <PageHead center label="Booking" title={<>Your event, <span className="pink">your way.</span></>} intro="Share a little about what you are planning and we will take it from here." />
+      <PageHead center label="Booking" title={<Accent text={settings.bookingTitle} />} intro={settings.bookingIntro} />
       <div className="steps" style={{ marginTop: 48 }}>
         {steps.map(([n, title, text]) => <article key={n}><p className="card-num">{n}</p><h2>{title}</h2><p>{text}</p></article>)}
       </div>

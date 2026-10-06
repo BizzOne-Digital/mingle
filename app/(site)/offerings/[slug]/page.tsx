@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { BookCta, Img, serviceImage } from '@/components/site'
-import { getOne } from '@/lib/data'
+import { getOne, getSettings } from '@/lib/data'
 import { audiences, site } from '@/lib/site'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Layout of the live site's concept detail page: back link, wide image, title, details + price sidebar.
 export default async function Offering({ params }: Props) {
-  const s = await find(params)
+  const [s, settings] = await Promise.all([find(params), getSettings()])
   if (!s) notFound()
   const book = `/booking?service=${encodeURIComponent(s.name)}`
   return (
@@ -36,7 +36,8 @@ export default async function Offering({ params }: Props) {
           <ul className="includes-list single">{audiences.map((a) => <li key={a}>{a}</li>)}</ul>
         </div>
         <aside className="concept-aside">
-          {s.startingPrice ? <p className="price-display small">{s.startingPrice}</p> : <p className="price-display small">Custom quote</p>}
+          {/* Only Curated Carts has a published price (Admin → Pricing); everything else is quoted per event. */}
+          <p className="price-display small">{s.slug === 'curated-carts' ? `From ${settings.cartsPrice}` : 'Custom quote'}</p>
           <p className="price-note">We will customize a price plan for your budget. Your final quote is confirmed in a custom proposal.</p>
           <Link className="btn-pink" href={book}>Book this experience</Link>
           <Link className="btn-outline" href="/contact">Ask a question</Link>

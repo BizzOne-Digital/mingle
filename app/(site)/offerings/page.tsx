@@ -1,5 +1,5 @@
-import { BookCta, ConceptGrid, EmptyState, PageHead } from '@/components/site'
-import { listPublic } from '@/lib/data'
+import { Accent, BookCta, ConceptGrid, EmptyState, PageHead } from '@/components/site'
+import { getSettings, listPublic } from '@/lib/data'
 
 export const metadata = {
   title: 'Offerings',
@@ -8,10 +8,10 @@ export const metadata = {
 }
 
 export default async function Offerings() {
-  const services = await listPublic('services')
+  const [services, settings] = await Promise.all([listPublic('services'), getSettings()])
   return (
     <>
-      <PageHead label="Our offerings" title="Choose your experience" intro="Curated, interactive experiences designed around your event. Our menu continues to grow as new selections are added." cta />
+      <PageHead label="Our offerings" title={<Accent text={settings.offeringsTitle} />} intro={settings.offeringsIntro} cta />
       {services.length === 0 ? <EmptyState title="Our menu is being refreshed" text="New experiences are on the way. Reach out and we will walk you through what is available for your date." /> : <ConceptGrid services={services} />}
       <BookCta />
     </>

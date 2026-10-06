@@ -1,9 +1,9 @@
-// Seeds MongoDB with the client-confirmed content: services, FAQs and the starting price (+ replaces old stock photos).
+// Seeds MongoDB with the client-confirmed content: offerings (services) and FAQs (+ replaces old stock photos).
 //   npm run seed            → inserts anything missing, never touches records an admin has edited
 //   npm run seed -- --force → also resets the seeded records back to these defaults
-// Testimonials, team members and blog posts are deliberately not seeded: they must be real, added in /admin.
+// Testimonials are deliberately not seeded: they must be real, added in /admin. Page text defaults live in code.
 import mongoose from 'mongoose'
-import { defaultFaqs, defaultImages, defaultServices } from '../lib/site.ts'
+import { defaultFaqs, defaultServices } from '../lib/site.ts'
 
 const uri = process.env.MONGODB_URI
 if (!uri) {
@@ -16,7 +16,6 @@ const force = process.argv.includes('--force')
 const plan = [
   { collection: 'services', key: 'slug', docs: defaultServices },
   { collection: 'faqs', key: 'question', docs: defaultFaqs },
-  { collection: 'settings', key: 'key', docs: [{ key: 'pricingStartingPrice', value: defaultImages.pricingStartingPrice }] },
 ]
 
 await mongoose.connect(uri, { serverSelectionTimeoutMS: 10000 })
