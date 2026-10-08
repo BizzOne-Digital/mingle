@@ -18,9 +18,9 @@ export const resources: Record<string, Resource> = {
   services: {
     label: 'Offerings', model: 'Service', folder: 'products', unique: 'slug', sort: { sortOrder: 1, createdAt: 1 }, columns: ['name', 'featured', 'active'],
     fields: [
-      { name: 'name', label: 'Name', type: 'text', required: true, max: 80 },
+      { name: 'name', label: 'Name', type: 'text', required: true },
       { name: 'slug', label: 'Slug', type: 'slug', required: true, max: 80, help: 'Lowercase words separated by hyphens, e.g. bliss-bar' },
-      { name: 'description', label: 'Description', type: 'textarea', required: true, max: 800 },
+      { name: 'description', label: 'Description', type: 'textarea', required: true },
       { name: 'image', label: 'Image', type: 'image' },
       featured, sortOrder, active,
     ],
