@@ -98,7 +98,7 @@ export const settingsFields: Field[] = [
   p('Offerings', 'offeringsIntro', 'Intro', 'Curated, interactive experiences designed around your event. Our menu continues to grow as new selections are added.', 400, 'Each offering is edited under Offerings.'),
 
   t('Fun & Games', 'funTitle', 'Heading', 'Affordable *luxury.*', 140, ACCENT),
-  p('Fun & Games', 'funIntro', 'Intro', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.', 400),
+  p('Fun & Games', 'funIntro', 'Intro', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.'),
   img('Fun & Games', 'interactiveImage', 'Fun & Games image', 'Used on the Fun & Games page and the Home page section.'),
 
   t('Pricing', 'pricingTitle', 'Heading', 'A price plan made for your event', 140),
