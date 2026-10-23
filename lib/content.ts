@@ -22,6 +22,11 @@ export const resources: Record<string, Resource> = {
       { name: 'slug', label: 'Slug', type: 'slug', required: true, max: 80, help: 'Lowercase words separated by hyphens, e.g. bliss-bar' },
       { name: 'description', label: 'Description', type: 'textarea', required: true },
       { name: 'image', label: 'Image', type: 'image' },
+      { name: 'price', label: 'Price', type: 'text', max: 120, help: 'Shown on the offering page, e.g. "Micro lounges: $150 – $500, depending on the setup". Leave empty for "Custom quote".' },
+      { name: 'photo1', label: 'Extra photo 1', type: 'image', help: 'Extra photos are shown on the offering page under the main image.' },
+      { name: 'photo2', label: 'Extra photo 2', type: 'image' },
+      { name: 'photo3', label: 'Extra photo 3', type: 'image' },
+      { name: 'photo4', label: 'Extra photo 4', type: 'image' },
       featured, sortOrder, active,
     ],
   },
@@ -80,7 +85,6 @@ export const settingsFields: Field[] = [
   p('Home', 'welcomeText', 'Welcome — text', 'We specialize in fun, creative, interactive and beautiful vignettes — curated carts, build-your-own takeaway bags, the Bliss Bar and Petal Passion — to make your event extra special and absolutely unforgettable.', 600),
   p('Home', 'welcomeTagline', 'Welcome — highlighted line', 'Planning a wedding, a corporate event, a school or church gathering, or a grand opening? Let us make it fun, festive and unforgettable.', 300),
   img('Home', 'introImage', 'Welcome image'),
-  t('Home', 'homeOfferingsTitle', 'Offerings section — heading', 'Choose your experience', 120),
   t('Home', 'homeFunTitle', 'Fun & Games section — heading', 'Games your guests|*gather around.*', 140, ACCENT),
   p('Home', 'homeFunText', 'Fun & Games section — text', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.', 400, 'The image is set under Fun & Games.'),
 
@@ -98,18 +102,24 @@ export const settingsFields: Field[] = [
   p('Offerings', 'offeringsIntro', 'Intro', 'Curated, interactive experiences designed around your event. Our menu continues to grow as new selections are added.', 400, 'Each offering is edited under Offerings.'),
 
   t('Fun & Games', 'funTitle', 'Heading', 'Affordable *luxury.*', 140, ACCENT),
-  p('Fun & Games', 'funIntro', 'Intro', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.'),
-  img('Fun & Games', 'interactiveImage', 'Fun & Games image', 'Used on the Fun & Games page and the Home page section.'),
+  p('Fun & Games', 'funIntro', 'Intro', 'Curated carts for food and games and interactive stations that get guests mingling, playing and creating together — fun by design.', 2000, 'Put each sentence on its own line. Colons, exclamation points and dashes are shown in pink automatically, and so is "Goofy Golfer".'),
+  img('Fun & Games', 'interactiveImage', 'Fun & Games image', 'Used on the Fun & Games page and the Home page section. Pick a photo where nobody\'s head is cut off at the top.'),
+  t('Fun & Games', 'comingTitle', 'Coming soon — heading', 'Coming *Spring 2027*', 140, ACCENT),
+  t('Fun & Games', 'comingName1', 'Coming soon 1 — name', "Cinderella's Carriage", 80),
+  img('Fun & Games', 'comingImage1', 'Coming soon 1 — photo'),
+  t('Fun & Games', 'comingName2', 'Coming soon 2 — name', 'Foam Parties', 80),
+  img('Fun & Games', 'comingImage2', 'Coming soon 2 — photo'),
+  t('Fun & Games', 'comingName3', 'Coming soon 3 — name', 'Glow-in-the-Dark Golf', 80),
+  img('Fun & Games', 'comingImage3', 'Coming soon 3 — photo'),
 
   t('Pricing', 'pricingTitle', 'Heading', 'A price plan made for your event', 140),
   p('Pricing', 'pricingIntro', 'Intro', 'Every Mingle experience is curated for your event, so every price plan is too.', 400),
-  t('Pricing', 'cartsPrice', 'Curated carts — starting price', '$800+', 40, 'Shown as "Starting from …"'),
-  t('Pricing', 'proposalPrice', 'Wedding proposals — starting price', '$1,000', 40, 'Shown as "Starting from …"'),
-  t('Pricing', 'pricingFootnote', 'Line under the prices', 'Your final quote is confirmed in a custom proposal built around your event.', 200),
+  p('Pricing', 'priceList', 'Price list', 'Carts | Starting at $500+\nPetal Passion | Starting at $200+\nSleepy Tee Pees | Starting at $100\n360 Video Station | Starting at $450\nFun & Games | $25 – $650\nA Little Romance | Starting at $800\nSitting Pretty | $150 – $500', 2000, 'One price per line: Name | Price. Each line becomes a card on the Pricing page.'),
+  t('Pricing', 'pricingFootnote', 'Line under the prices', 'Customized packages are welcome — price will be determined during your consult.', 200),
   img('Pricing', 'pricingImage', 'Feature image'),
   p('Pricing', 'pricingQuote', 'Feature image caption', 'Every detail is curated around your guests, your vision and your budget.', 300),
 
-  t('Gallery', 'galleryTitle', 'Heading', 'Moments we have styled', 120, 'Also used for the gallery section on Home. Photos are managed under Gallery.'),
+  t('Gallery', 'galleryTitle', 'Heading', 'Endless *possibilities!*', 120, 'Also used for the gallery section on Home. Photos are managed under Gallery.'),
   p('Gallery', 'galleryIntro', 'Intro', 'A look at The Mingle experiences in action.', 300),
 
   t('Testimonials', 'testimonialsTitle', 'Heading', 'Kind words', 120),
@@ -124,9 +134,18 @@ export const settingsFields: Field[] = [
   t('Booking', 'bookingTitle', 'Heading', 'Your event, *your way.*', 140, ACCENT),
   p('Booking', 'bookingIntro', 'Intro', 'Share a little about what you are planning and we will take it from here.', 300),
 
-  t('Booking banner & footer', 'ctaTitle', 'Closing banner — heading (every page)', "Let's plan *your day.*", 140, ACCENT),
+  t('Booking banner & footer', 'ctaTitle', 'Closing banner — heading (every page)', "Let's plan your day.. *your way!*", 140, ACCENT),
   p('Booking banner & footer', 'ctaText', 'Closing banner — text', 'Tell us about your event and we will shape an experience around your guests, your vision and your budget.', 400),
   p('Booking banner & footer', 'footerText', 'Footer — brand statement', 'Unique, curated experiences for your event — curated carts, the Bliss Bar, Petal Passion and interactive vignettes that make every celebration unforgettable.', 400),
+
+  // Page header photos (shown beside the page title).
+  img('Offerings', 'offeringsHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('Pricing', 'pricingHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('Gallery', 'galleryHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('Testimonials', 'testimonialsHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('FAQ', 'faqHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('Contact', 'contactHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
+  img('Booking', 'bookingHeadImage', 'Header image', 'Shown beside the page title. Leave empty to use the built-in photo.'),
 
   // Built-in (live-site) gallery photos hidden from /gallery — managed in Admin → Gallery (no group: never shown in a form).
   { name: 'galleryHidden', label: 'Hidden gallery photos', type: 'textarea', max: 5000 },

@@ -11,8 +11,8 @@ export default async function Offerings() {
   const [services, settings] = await Promise.all([listPublic('services'), getSettings()])
   return (
     <>
-      <PageHead label="Our offerings" title={<Accent text={settings.offeringsTitle} />} intro={settings.offeringsIntro} cta />
-      {services.length === 0 ? <EmptyState title="Our menu is being refreshed" text="New experiences are on the way. Reach out and we will walk you through what is available for your date." /> : <ConceptGrid services={services} />}
+      <PageHead image={settings.offeringsHeadImage} label="Our offerings" title={<Accent text={settings.offeringsTitle} />} intro={settings.offeringsIntro} cta />
+      {services.length === 0 ? <EmptyState title="Our menu is being refreshed" text="New experiences are on the way. Reach out and we will walk you through what is available for your date." /> : <ConceptGrid services={services} short />}
       <BookCta />
     </>
   )

@@ -9,7 +9,7 @@ const actions: [string, string, string][] = [
   ['/admin/pages', 'Edit page text & images', 'Headlines, paragraphs and photos for every page'],
   ['/admin/gallery', 'Manage the gallery', 'Add, delete or hide gallery photos'],
   ['/admin/services', 'Update offerings', 'Names, descriptions and photos'],
-  ['/admin/pricing', 'Change prices', 'Curated carts and wedding proposals'],
+  ['/admin/pricing', 'Change prices', 'The Pricing page price list'],
 ]
 
 export default async function Dashboard() {

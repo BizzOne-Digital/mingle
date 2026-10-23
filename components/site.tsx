@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Mail, MessageCircle, Phone } from 'lucide-react'
+import { Gift, Mail, MessageCircle, Phone, Sofa, Target } from 'lucide-react'
 import { audiences, defaultImages, defaultServices, site } from '@/lib/site'
 import { resolveImage } from '@/lib/uploads'
 import { getSettings } from '@/lib/data'
@@ -16,25 +16,29 @@ export function Img({ src, fallback, alt, sizes, priority, natural }: { src?: st
 // A service's own live-site photo when its saved image is missing or legacy.
 export const serviceImage = (slug: string) => defaultServices.find((d) => d.slug === slug)?.image ?? defaultImages.introImage
 
-/** Page header: left-aligned with a rule, or centred. `cta` adds an early "Book your date" link. */
-export function PageHead({ label, title, intro, center, cta }: { label: string; title: React.ReactNode; intro?: string; center?: boolean; cta?: boolean }) {
+/** Page header on the pink wash. `image` (Admin → Pages → Header image) turns it into the photo hero. `cta` adds an extra link. */
+export function PageHead({ label, title, intro, center, cta, image }: { label: string; title: React.ReactNode; intro?: string; center?: boolean; cta?: boolean; image?: string }) {
+  // With a photo: the same full-bleed hero as Fun & Games (copy left, photo filling the right and fading into the pink).
+  if (image) return (
+    <section className="hero page-hero">
+      <div className="hero-copy">
+        <p className="section-label">{label}</p>
+        <h1>{title}</h1>
+        {intro && <p className="lead">{intro}</p>}
+        <div className="actions"><Link className="btn-pink" href="/booking">Book your date →</Link>{cta && <Link className="btn-outline" href="/contact">Contact us</Link>}</div>
+      </div>
+      <div className="hero-visual"><div className="hero-main"><Img src={image} fallback={defaultImages.introImage} alt="" sizes="(max-width: 860px) 100vw, 50vw" priority /></div></div>
+    </section>
+  )
   return (
     <div className={`page-head${center ? ' center' : ''}`}>
-      <p className="section-label">{label}</p>
-      <h1>{title}</h1>
-      {intro && <p className="lead">{intro}</p>}
-      {cta && <div className="actions"><Link className="btn-pink" href="/booking">Book your date</Link></div>}
+      <div className="page-head-copy">
+        <p className="section-label">{label}</p>
+        <h1>{title}</h1>
+        {intro && <p className="lead">{intro}</p>}
+        {cta && <div className="actions"><Link className="btn-pink" href="/booking">Book your date →</Link></div>}
+      </div>
     </div>
-  )
-}
-
-/** The black "Also perfect for" band (who The Mingle serves). */
-export function AudienceBand() {
-  return (
-    <section className="band">
-      <p className="kicker">Also perfect for</p>
-      <p>{audiences.join(' · ')} · <span className="accent">Celebrations across the Kansas City area</span></p>
-    </section>
   )
 }
 
@@ -43,6 +47,15 @@ export function AudienceBand() {
 export function Accent({ text }: { text: string }) {
   return <>{text.split('|').map((line, i) => (
     <Fragment key={i}>{i > 0 && <br />}{line.split('*').map((part, j) => (j % 2 ? <span key={j} className="pink">{part}</span> : part))}</Fragment>
+  ))}</>
+}
+
+/** Admin-editable text shown one sentence per line (each line, or each sentence when there are no line breaks),
+    with colons, exclamation points, dashes and "Goofy Golfer" in pink. */
+export function Lines({ text }: { text: string }) {
+  const lines = (text.includes('\n') ? text.split(/\n+/) : text.split(/(?<=[.!?])\s+/)).map((l) => l.trim()).filter(Boolean)
+  return <>{lines.map((line, i) => (
+    <span className="line" key={i}>{line.split(/(Goofy Golfer|[:!—–]|\s-\s)/i).map((part, j) => (j % 2 ? <span key={j} className="pink-mark">{part}</span> : part))}</span>
   ))}</>
 }
 
@@ -56,10 +69,11 @@ export async function BookCta() {
   const s = await getSettings()
   return (
     <section className="book-cta" aria-label="Book The Mingle">
-      <p className="kicker">Reserve your date</p>
-      <h2><Accent text={s.ctaTitle} /></h2>
+      <div className="book-cta-title">
+        <h2><Accent text={s.ctaTitle} /></h2>
+      </div>
       <p className="lead">{s.ctaText}</p>
-      <div className="actions"><Link className="btn-pink" href="/booking">Book your date</Link><Link className="btn-outline" href="/contact">Contact us</Link></div>
+      <div className="actions"><Link className="btn-light" href="/booking">Book your date →</Link></div>
     </section>
   )
 }
@@ -77,21 +91,25 @@ export function EmptyState({ title, text }: { title: string; text: string }) {
   )
 }
 
-/** Live-site concept cards: bordered 3-column grid, tall image, number, name, description, price. */
-export function ConceptGrid({ services }: { services: any[] }) {
+const cardIcons = [Sofa, Target, Gift]
+
+/** Rounded offering cards: photo with a round icon badge, name, description, "View details". `short` clamps the description to two lines (Home). */
+export function ConceptGrid({ services, short }: { services: any[]; short?: boolean }) {
   return (
-    <div className="concepts-grid">
-      {services.map((s, i) => (
+    <div className={`concepts-grid${short ? ' short' : ''}`}>
+      {services.map((s, i) => {
+        const Icon = cardIcons[i % cardIcons.length]
+        return (
         <Link className="concept-card" key={s._id ?? s.slug} href={`/offerings/${s.slug}`}>
-          <div className="card-img"><Img src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 640px) 100vw, (max-width: 860px) 50vw, 360px" /></div>
+          <div className="card-img"><Img src={s.image} fallback={serviceImage(s.slug)} alt={s.name} sizes="(max-width: 640px) 100vw, (max-width: 860px) 50vw, 360px" /><span className="card-icon"><Icon size={22} aria-hidden="true" /></span></div>
           <div className="card-body">
-            <p className="card-num">{String(i + 1).padStart(2, '0')}</p>
             <h3 className="card-name">{s.name}</h3>
             <p className="card-desc">{s.description}</p>
-            <p className="card-more">View details</p>
+            <p className="card-more">View details →</p>
           </div>
         </Link>
-      ))}
+        )
+      })}
     </div>
   )
 }

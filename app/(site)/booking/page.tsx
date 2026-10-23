@@ -19,7 +19,7 @@ export default async function Booking({ searchParams }: { searchParams: Promise<
   const names = services.map((s) => s.name as string)
   return (
     <>
-      <PageHead center label="Booking" title={<Accent text={settings.bookingTitle} />} intro={settings.bookingIntro} />
+      <PageHead image={settings.bookingHeadImage} center label="Booking" title={<Accent text={settings.bookingTitle} />} intro={settings.bookingIntro} />
       <div className="steps" style={{ marginTop: 48 }}>
         {steps.map(([n, title, text]) => <article key={n}><p className="card-num">{n}</p><h2>{title}</h2><p>{text}</p></article>)}
       </div>

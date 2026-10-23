@@ -1,10 +1,13 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Great_Vibes } from 'next/font/google'
 import { site } from '@/lib/site'
 import './globals.css'
 
 // The site logo, trimmed and padded to a square by Cloudinary (the source is a wide 683×315 image).
 const favicon = (size: number) => site.logo.replace('/upload/', `/upload/e_trim/c_pad,w_${size},h_${size},b_white,f_png/`).replace(/\.jpg$/, '.png')
+
+const script = Great_Vibes({ weight: '400', subsets: ['latin'], variable: '--script' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -18,5 +21,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { colorScheme: 'light', themeColor: '#ffffff', width: 'device-width', initialScale: 1 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className="antialiased">{children}{process.env.NODE_ENV === 'production' && <Analytics />}</body></html>
+  return <html lang="en"><body className={`antialiased ${script.variable}`}>{children}{process.env.NODE_ENV === 'production' && <Analytics />}</body></html>
 }

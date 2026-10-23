@@ -13,7 +13,7 @@ export default async function Contact() {
   const [services, settings] = await Promise.all([listPublic('services'), getSettings()])
   return (
     <>
-      <PageHead center label="Get in touch" title={<Accent text={settings.contactTitle} />} intro={settings.contactIntro} />
+      <PageHead image={settings.contactHeadImage} center label="Get in touch" title={<Accent text={settings.contactTitle} />} intro={settings.contactIntro} />
       <ContactCards />
       <div className="form-wrap">
         <h2 className="form-title">Send a message</h2>

@@ -18,7 +18,7 @@ export const nav: [string, string][] = [
 ]
 
 export const audiences = [
-  'Brides', 'Women planning celebrations', 'Event planners', 'Wedding planners', 'Corporate event planners', 'HR professionals',
+  'Brides', 'Event planners', 'Wedding planners', 'Corporate event planners', 'HR professionals',
   'Schools', 'Churches', 'Local businesses', 'Grand openings', 'Special events',
 ]
 
@@ -36,6 +36,14 @@ export const defaultImages: Record<string, string> = {
   pricingImage: live('pop-pop-fizz.jpg'),
   // Golf / lawn-game photos: Home "Fun & Games" section and the Fun & Games page, not the wedding hero.
   interactiveImage: live('the-mingle-events.jpg'),
+  // Page header photos (Admin → Pages → each page → Header image).
+  offeringsHeadImage: live('bliss-bar.jpg'),
+  pricingHeadImage: live('celebrations-party-scene.jpg'),
+  galleryHeadImage: live('celebrations.jpg'),
+  testimonialsHeadImage: live('the-mingle-bike.jpg'),
+  faqHeadImage: live('bark-bar.jpg'),
+  contactHeadImage: live('boot-scoot.jpg'),
+  bookingHeadImage: live('pop-pop-fizz.jpg'),
 }
 
 // Shown on /gallery until real photos are uploaded to Admin → Gallery.
@@ -65,11 +73,11 @@ export const defaultFaqs = [
   { question: 'Can an experience be customized?', sortOrder: 2, active: true,
     answer: 'Yes. Every Mingle experience is curated around your event, your guests and your vision.' },
   { question: 'How does pricing work?', sortOrder: 3, active: true,
-    answer: 'Curated carts start from $800+ and wedding proposals start from $1,000. Your final quote is confirmed in a custom proposal built around your event and budget.' },
+    answer: 'You can rent one of our beautiful carts for $500 — we deliver and set up, and you add all of the decorations and supplies: food, candy and more. If you would like us to decorate, set up, do the lighting and provide the treats (or whatever you would like to serve), those start at $800 plus food and drinks. We will customize a plan around your budget, and your final quote is confirmed as a custom proposal.' },
   { question: 'How do I book?', sortOrder: 4, active: true,
     answer: 'Send an inquiry through our booking page, or call, text or WhatsApp us at 913-706-2347. We will follow up to talk through your vision.' },
   { question: 'How do I pay a deposit?', sortOrder: 5, active: true,
-    answer: 'Once your experience is confirmed, we will send you a secure link to pay your deposit online.' },
+    answer: 'Once your experience is confirmed, we will send you a secure link to pay your deposit online. The Mingle requires a 50% deposit to reserve your date, and the balance must be paid 7 days prior to your event.' },
 ]
 
 export const fmtDate = (d?: string) => (d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '')

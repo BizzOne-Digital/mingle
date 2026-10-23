@@ -5,29 +5,25 @@ import { defaultImages } from '@/lib/site'
 
 export const metadata = {
   title: 'Pricing',
-  description: 'The Mingle pricing: curated carts start from $800+ and wedding proposals start from $1,000, with a custom proposal for every event.',
+  description: 'The Mingle pricing: carts, Petal Passion, Sleepy Tee Pees, 360 video station, Fun & Games, A Little Romance and Sitting Pretty — customized packages welcome.',
   alternates: { canonical: '/pricing' },
 }
 
 export default async function Pricing() {
   const settings = await getSettings()
+  // Admin → Pricing → Price list: one "Name | Price" per line.
+  const prices = settings.priceList.split('\n').map((l) => l.split('|').map((x) => x.trim())).filter(([name]) => name)
   return (
     <>
-      <PageHead label="Pricing" title={<Accent text={settings.pricingTitle} />} intro={settings.pricingIntro} />
-      {/* The only two published prices — both edited in Admin → Pricing. */}
-      <div className="price-cards">
-        <article>
-          <p className="card-num">CURATED CARTS</p>
-          <p className="price-from">Starting from</p>
-          <p className="price-display">{settings.cartsPrice}</p>
-          <Link className="text-link" href="/offerings/curated-carts">View curated carts →</Link>
-        </article>
-        <article>
-          <p className="card-num">WEDDING PROPOSALS</p>
-          <p className="price-from">Starting from</p>
-          <p className="price-display">{settings.proposalPrice}</p>
-          <Link className="text-link" href="/booking">Plan a proposal →</Link>
-        </article>
+      <PageHead image={settings.pricingHeadImage} label="Pricing" title={<Accent text={settings.pricingTitle} />} intro={settings.pricingIntro} />
+      <div className="price-cards price-grid">
+        {prices.map(([name, price]) => (
+          <article key={name}>
+            <h2 className="price-name">{name}</h2>
+            <p className="price-display">{price}</p>
+            <Link className="text-link" href={`/booking?service=${encodeURIComponent(name)}`}>Book this →</Link>
+          </article>
+        ))}
       </div>
       <p className="price-footnote">{settings.pricingFootnote}</p>
       {/* Editorial feature image — Admin → Pages → "Pricing page — feature image" overrides the default. */}
