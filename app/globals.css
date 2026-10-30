@@ -701,5 +701,7 @@ main:has(> .book-cta:last-child) + .site-footer { margin-top: 0; }
 
 /* Inner-page photo hero (PageHead with an image): shorter than Home, people kept in frame. */
 .page-hero { min-height: min(520px, calc(100svh - 72px)); }
-.page-hero .hero-visual { min-height: 440px; }
+/* Desktop only: with the mobile 4/3 aspect-ratio, a 440px min-height forces a 587px-wide column and overflows phones. */
+@media (min-width: 861px) { .page-hero .hero-visual { min-height: 440px; } }
 .page-hero .hero-main img { object-position: center 30%; }
+.page-hero + .concepts-grid { margin-top: 48px; }
