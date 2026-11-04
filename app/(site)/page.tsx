@@ -25,11 +25,11 @@ export default async function Home() {
         </div>
         <div className="hero-visual">
           <div className="hero-main"><Image src={resolveImage(settings.heroImage, defaultImages.heroImage)} alt="A smiling bride beside The Mingle's Bliss Bar" fill priority sizes="(max-width: 860px) 100vw, 50vw" /></div>
-          {snaps.map((s, i) => (
+          {/* {snaps.map((s, i) => (
             <Link key={s.slug} href={`/offerings/${s.slug}`} className={`hero-snap snap-${i + 1}`} aria-label={s.name}>
               <Img src={s.image} fallback={serviceImage(s.slug)} alt="" sizes="240px" />
             </Link>
-          ))}
+          ))} */}
         </div>
       </section>
 
